@@ -1,0 +1,295 @@
+.el-col {
+  margin-bottom: 15px !important;
+}
+
+.no-margin {
+  margin-bottom: 0px !important;
+}
+
+.el-menu-item i {
+  color: inherit;
+}
+
+.dialog-btn-group {
+  text-align: right;
+  margin-bottom: 0;
+}
+
+.el-table td, .el-table th {
+  padding: 6px 0 !important;
+  margin: 0 15px;
+}
+
+.el-table .cell {
+  word-break: keep-all;
+  white-space: nowrap;
+}
+
+.el-submenu__title i {
+  color: inherit;
+}
+
+li.el-menu-item.is-active {
+  color: #000 !important;
+  background: #fff !important;
+}
+
+.el-menu--collapse .el-submenu .el-menu {
+  border-radius: 5px !important;
+  border: 0 !important;
+}
+
+.el-submenu__title {
+  height: 45px !important;
+  min-width: 185px !important;
+  line-height: 45px !important;
+  border-radius: inherit;
+}
+
+.el-menu-item {
+  height: 40px !important;
+  min-width: 185px !important;
+  line-height: 40px !important;
+  border-radius: inherit;
+}
+
+.el-tabs__header {
+  margin-bottom: 0;
+}
+
+.el-checkbox+.el-checkbox {
+  margin-left: 0px !important;
+}
+
+.el-radio {
+  line-height: 40px;
+  margin-right: 30px !important;
+}
+
+.el-radio+.el-radio {
+  margin-left: 0px !important;
+}
+
+@media screen and (max-width: 450px) {
+  .el-message-box {
+    width: auto !important;
+  }
+}
+
+.el-message {
+  min-width: 280px !important;
+}
+
+.clearfix:before,
+.clearfix:after {
+  display: table;
+  content: "";
+}
+
+.clearfix:after {
+  clear: both
+}
+
+div.el-card__body {
+  padding: 0 !important;
+}
+
+.box-card .el-card__body{
+  height:100%!important
+}
+
+.el-input__inner {
+  height: 30px !important;
+  line-height: 30px !important;
+}
+
+.m1-header .el-row .el-col {
+  margin-bottom: 15px;
+}
+
+.m1-header .btn-group {
+  text-align: right;
+}
+
+.m1-header .btn-group i {
+  font-size: 18px !important;
+}
+
+.m1-header .btn-group .el-button {
+  padding: 5px 10px !important;
+}
+
+.m1-header .btn-group .el-button+.el-button {
+  margin-left: 2px !important;
+}
+
+.m1-table .el-table__header-wrapper th {
+  background: #e3f7ff;
+  color: #000;
+  text-align: center;
+  font-size: 12px !important;
+}
+
+.m2-table .el-table__header-wrapper th {
+  background: rgba(245, 249, 34, 0.62);
+  color: #000;
+  text-align: center;
+  font-size: 12px !important;
+}
+
+.m-table .el-table__body-wrapper td {
+  color: #000;
+  font-weight: 200;
+  text-align: center;
+  font-size: 12px !important;
+}
+
+.m1-table .el-table__body-wrapper td {
+  color: #000;
+  font-weight: 200;
+  text-align: center;
+  font-size: 12px !important;
+}
+
+.m1-header {
+  padding: 0 15px;
+  padding-top: 6px;
+}
+
+.m1-header .el-row .el-col {
+  margin-bottom: 6px !important;
+}
+
+.m1-header .el-input {
+  font-size: 12px !important;
+}
+
+.m1-dialog {
+  border-radius: 4px;
+}
+
+.m1-dialog .el-dialog__header {
+    height: 36px !important;
+    line-height: 36px !important;
+    padding: 0 20px !important;
+    background: #0086ff !important;
+    border-radius: 4px 4px 0 0;
+}
+
+.m1-dialog .el-dialog__header .el-dialog__title {
+    font-size: 14px !important;
+    line-height: 14px !important;
+    color: #fff;
+}
+
+.m1-dialog .el-dialog__header .el-dialog__headerbtn {
+    top: 9px;
+}
+
+.m1-dialog .el-dialog__header .el-dialog__headerbtn i {
+    color: #fff;
+}
+
+.padding-tab .el-tabs__content {
+  padding-bottom: 15px !important;
+}
+
+.padding-tab .el-tabs__nav-scroll {
+  padding-left: 42px !important;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.fill-page {
+    height: 100%;
+}
+.fill-card {
+    height: 100%;
+}
+
+.fill-card .el-card__body {
+    height: 100%;
+}
+
+.fill-page.el-col {
+    margin-bottom: 0 !important;
+}
+
+.scoll-tab {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.scoll-tab .el-tabs__content {
+    flex: 1;
+    overflow: auto;
+}
+
+.preview .el-form-item__content div {
+  margin-left: 40px;
+}
+
+.preview .el-form-item__content div:empty::after {
+  content: "无";
+}
+
+.preview .el-form-item {
+  border-bottom: #ccc solid 1px;
+}
+
+.el-table .cell:empty::after {
+  content: "无"
+}
+
+.el-tree__empty-text {
+  font-size: 12px;
+}
+
+.m1-table .el-button i {
+  font-size: 18px !important;
+}
+
+.m1-table .el-button {
+  padding: 5px 10px !important;
+}
+
+.m1-table .el-button+.el-button {
+  margin-left: 2px !important;
+}
+
+.file.el-popper[x-placement^="bottom"] {
+  background: rgb(145, 191, 223) 
+}
+
+.file .el-tree-node__content{
+  background-color: rgb(145, 191, 223) !important;
+}
+
+.file .el-tree__empty-block{
+  background-color: rgb(145, 191, 223) !important;
+}
+
+.file .el-tree-node__label{
+  color: #fff
+}
+
+.file .el-icon-caret-right.expanded{
+  color: #fff
+}
+
+.file .el-tree__empty-text{
+  color: #fff
+}
+
+.file.el-popper[x-placement^="bottom"] .popper__arrow{
+  display: none;
+}
