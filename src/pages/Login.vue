@@ -5,7 +5,7 @@
         <div class="login-body">
           <div class="logo">
             <!-- <img src="../assets/logo.png" height="80" width="80" /> -->
-            <div style="text-align: center">管道管理系统</div>
+            <div style="text-align: center">大学生选课系统</div>
           </div>
           <div class="login-item" style="background: #fff; border-radius: 4px; margin-bottom: 15px;">
             <div style="border-bottom: 1px solid #ccc">
