@@ -5,7 +5,7 @@
         <div class="login-body">
           <div class="logo">
             <!-- <img src="../assets/logo.png" height="80" width="80" /> -->
-            <div style="text-align: center">管道管理系统</div>
+            <div style="text-align: center">大学生选课系统</div>
           </div>
           <div class="login-item" style="background: #fff; border-radius: 4px; margin-bottom: 15px;">
             <div style="border-bottom: 1px solid #ccc">
@@ -25,19 +25,19 @@
               </div>
             </div>
           </div>
-          <div class="selectIdenty">   
-            <el-radio-group v-model="identy">
-              <el-radio :label="1">教学秘书</el-radio>
-              <el-radio :label="2">教师</el-radio>
-              <el-radio :label="3">学生</el-radio>
+          <div class="login-log" style="float:left">
+            <el-checkbox v-model="isAutoLogin" checked="checked" style="color: #fff; font-weight: 200;">自动登录</el-checkbox>
+            <!-- <el-button style="float: right; padding: 0; font-size: 14px;" type="text" @click.native="forgot">忘记密码</el-button> -->
+          </div>
+          <div class="selectRadio" style="float:right ">
+            <el-radio-group v-model="identity" >
+             <el-radio :label="1"><span class="word">教学秘书</span></el-radio>
+             <el-radio :label="2"><span class="word">教师</span></el-radio>
+             <el-radio :label="3"><span class="word">学生</span></el-radio>
             </el-radio-group>
           </div>
-          <div class="login-log">
-            <el-checkbox v-model="isAutoLogin" checked="checked"  style="color: #fff; font-weight: 200;">自动登录</el-checkbox>
-            <el-button style="float: right; padding: 0; font-size: 14px;" type="text" @click.native="forgot">忘记密码</el-button>         
-          </div>
           <div>
-            <el-button type="primary" style="width:100%; background-color:rgb(219,143,55);font-size: 14px; height: 35px; line-height: 35px; padding: 0"
+            <el-button class = "loginButton" type="primary" style="width:100%; background-color: rgb(219, 143, 55) font-size: 14px; height: 35px; line-height: 35px; padding: 0"
                        @click.native="login" v-loading.fullscreen.lock="isLoading">登录
             </el-button>
           </div>
@@ -59,10 +59,17 @@
 </template>
 
 <style>
+.word{
+  color: #fff;
+  font-color: #fff;
+}
+.loginButton{
+  background-color:#CD835F
+}
 .login-body {
   padding: 25px;
   border-radius: 4px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .login {
@@ -91,7 +98,13 @@
   margin-bottom: 15px;
   color: #fff;
 }
-
+.selectRadio{
+  padding-right: 1px;
+  font-color:#00ffff;
+}
+.autoLogin{
+  padding-top:0px;
+}
 .login-log {
   padding-left: 1px;
   margin-bottom: 15px;
@@ -121,7 +134,7 @@
         userName: "",
         password: "",
         isLoading: false,
-        identy:3,
+        identity:1, 
         forgotEmail: "",
         isShowForgotDialog: false
       };
@@ -148,6 +161,7 @@
         let formData = new FormData()
         formData.append('userName', this.userName)
         formData.append('password', this.password)
+        formData.append('identity', this.identity)
         this.$http.post("/auth/login", formData, {
           hideLoading: true,
         }).then(res => {
