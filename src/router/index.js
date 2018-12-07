@@ -9,13 +9,19 @@ import index from '@/pages/index'
 
 import Management from '@/pages/setting/user/Management'
 import ModuleManagement from '@/pages/setting/module/ModuleManagement'
-
 import DictionaryQuery from '@/pages/setting/dictionary/DictionaryQuery'
 import DictionaryEdit from '@/pages/setting/dictionary/DictionaryEdit'
 import DataRole from '@/pages/setting/dataRole/DataRole'
 import Role from  '@/pages/setting/role/Role'
 import Organization from  '@/pages/setting/organization/Organization'
 import Unit from '@/pages/setting/unit/UnitManagement'
+
+import ProfessionalManage from '@/pages/TeacherSecretary/ProfessionalManage'
+import studentManage from '@/pages/TeacherSecretary/studentManage'
+import courseManage from '@/pages/TeacherSecretary/courseManage'
+import teachingPlanManage from '@/pages/TeacherSecretary/teachingPlanManage'
+import teacherManage from '@/pages/TeacherSecretary/teacherManage'
+
 Vue.use(Router)
 
 const routes = [
@@ -44,19 +50,56 @@ const routes = [
       }
     ]
   },
-
-  
-
-
-
+{
+  path:'/TeacherSecretary',
+  component:Main,
+  children:[
+    {
+      path:'ProfessionalManage',
+      name:'专业管理',
+      component:ProfessionalManage,
+      meta:{
+        keepAlive:true
+      }
+    },
+    {
+      path:'studentManage',
+      name:'学生管理',
+      component:studentManage,
+      meta:{
+        keepAlive:true
+      }
+    },
+    {
+      path:'courseManage',
+      name:'课程管理',
+      component:courseManage,
+      meta:{
+        keepAlive:true
+      }
+    },
+    {
+      path:'teachingPlanManage',
+      name:'教学计划管理',
+      component:teachingPlanManage,
+      meta:{
+        keepAlive:true
+      }
+    },
+    {
+      path:'teacherManage',
+      name:'教师管理',
+      component:teacherManage,
+      meta:{
+        keepAlive:true
+      }
+    },
+  ]
+},
 {
   path: '/setting/user',
-    component
-:
-  Main,
-    children
-:
-  [
+    component:Main,
+    children:[
     {
       path: 'menagement',
       name: '用户管理',
@@ -66,15 +109,11 @@ const routes = [
       }
     },
   ]
-}
-,
+},
 {
   path: '/setting/module',
-    component
-:
-  Main,
-    children
-:
+    component:Main,
+    children:
   [
     {
       path: 'moduleManagement',
@@ -85,15 +124,11 @@ const routes = [
       }
     },
   ]
-}
-,
+},
 {
   path: '/setting/dictionary',
-    component
-:
-  Main,
-    children
-:
+    component:Main,
+    children:
   [
     {
       path: 'DictionaryQuery',
@@ -112,15 +147,11 @@ const routes = [
       }
     },
   ]
-}
-,
+},
 {
   path: '/setting/datarole',
-    component
-:
-  Main,
-    children
-:
+    component:Main,
+    children:
   [
     {
       path: 'dataRole',
@@ -131,15 +162,11 @@ const routes = [
       }
     },
   ]
-}
-,
+},
 {
   path: '/setting/role',
-    component
-:
-  Main,
-    children
-:
+    component:Main,
+    children:
   [
     {
       path: 'role',
@@ -150,15 +177,11 @@ const routes = [
       }
     },
   ]
-}
-,
+},
 {
   path: '/setting/organization',
-    component
-:
-  Main,
-    children
-:
+    component:Main,
+    children:
   [
     {
       path: 'organization',
@@ -169,15 +192,11 @@ const routes = [
       }
     },
   ]
-}
-,
+},
 {
   path: '/setting/unit',
-    component
-:
-  Main,
-    children
-:
+    component:Main,
+    children:
   [
     {
       path: 'unit',
@@ -188,12 +207,7 @@ const routes = [
       }
     },
   ]
-}
-,
-
-
-
-
+},
 ]
 
 export default new Router({
