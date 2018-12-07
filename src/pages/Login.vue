@@ -187,6 +187,7 @@
             window.sessionStorage.setItem("userName", this.userName);
             window.sessionStorage.setItem("realName", body.data.realName);
             window.sessionStorage.setItem("token", body.data.token);
+            window.sessionStorage.setItem("identity", body.data.identity);
             window.sessionStorage.setItem("roleIds",body.data.roleIds);
             window.sessionStorage.setItem("droleIds",body.data.droleIds);
             this.$http.defaults.headers.common['X-Auth-Token'] = body.data.token

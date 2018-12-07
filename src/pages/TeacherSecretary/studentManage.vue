@@ -4,9 +4,14 @@
      <Table2 :data="tableData" :checkData="checkTableData" :isShow="isShow" style="height: 100%;">
        <template slot="header">
          <el-row :gutter="10">
-            <el-col :md="6">
+            <el-col :md="3">
               <el-select v-model="selectcollege" placeholder="请选择学院" @focus="getCollege()">
                 <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value="v.collegeNumber"></el-option>
+              </el-select>
+            </el-col>
+            <el-col :md="3">
+              <el-select v-model="selectmajor" placeholder="请选择专业" @focus="getMajor()">
+                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorNumber"></el-option>
               </el-select>
             </el-col>
             <el-col :md="18" class="btn-group">
@@ -61,7 +66,9 @@
     data() {
       return {
         selectcollege:"",
+        selectmajor:"",
         college:[],
+        majors:[],
       };
     },
     methods: {
@@ -79,6 +86,26 @@
             }
 
           });
+        },
+        getMajor(){
+          this.majors = [];
+          this.$htto
+          .post("/TeacherSecretary/getMajor",{
+            params: {
+              college:this.selectcollege,
+            }},
+          {
+            hideLoading:true,
+          }
+          )
+          .then(res => {
+            let body = res.data;
+            if(body.code === "200"){
+              this.majors = body.data;
+            }
+          }
+
+          )
         }
       }
   }
