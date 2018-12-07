@@ -25,12 +25,19 @@
               </div>
             </div>
           </div>
+          <div class="selectIdenty">   
+            <el-radio-group v-model="identy">
+              <el-radio :label="1">教学秘书</el-radio>
+              <el-radio :label="2">教师</el-radio>
+              <el-radio :label="3">学生</el-radio>
+            </el-radio-group>
+          </div>
           <div class="login-log">
-            <el-checkbox v-model="isAutoLogin" checked="checked" style="color: #fff; font-weight: 200;">下次自动登录</el-checkbox>
-            <!-- <el-button style="float: right; padding: 0; font-size: 14px;" type="text" @click.native="forgot">忘记密码</el-button> -->
+            <el-checkbox v-model="isAutoLogin" checked="checked"  style="color: #fff; font-weight: 200;">自动登录</el-checkbox>
+            <el-button style="float: right; padding: 0; font-size: 14px;" type="text" @click.native="forgot">忘记密码</el-button>         
           </div>
           <div>
-            <el-button type="primary" style="width:100%; font-size: 14px; height: 35px; line-height: 35px; padding: 0"
+            <el-button type="primary" style="width:100%; background-color:rgb(219,143,55);font-size: 14px; height: 35px; line-height: 35px; padding: 0"
                        @click.native="login" v-loading.fullscreen.lock="isLoading">登录
             </el-button>
           </div>
@@ -92,6 +99,11 @@
 .login-log .el-checkbox__label {
   font-size: 12px;
 }
+.selectIdenty .el-radio__label{
+  margin-top: -5px;
+  font-size: 12px;
+  color: #fff;
+}
 </style>
 
 
@@ -109,7 +121,7 @@
         userName: "",
         password: "",
         isLoading: false,
-
+        identy:3,
         forgotEmail: "",
         isShowForgotDialog: false
       };
