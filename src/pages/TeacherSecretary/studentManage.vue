@@ -25,6 +25,18 @@
               <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>
               <el-button type="success" size="normal" icon="el-icon-circle-plus" @click="showAdd"></el-button>
               <el-button type="warning" size="normal" icon="el-icon-delete" @click="handleDelete"></el-button>
+              <el-upload ref="upload"
+                style="float: right;padding-left: 5px"
+                :action="uploadURL"
+                multiple
+                :limit="1"
+                :show-file-list="false"
+                accept=".xls,.xlsx"
+                :before-upload="beforeUpload"
+                :on-error="handleError"
+                :on-success="handleSuccess">
+                  <el-button type="primary"  size="normal" icon="fa fa-cloud-upload	"></el-button>
+              </el-upload>
             </el-col>
           </el-row>
        </template>
@@ -77,10 +89,27 @@
         selectclass:"",
         college:[],
         majors:[],
-        classes:[]
+        classes:[],
+        uploadURL:"",
       };
     },
+    created() {
+      this.getParams();
+    },
+    activated() {
+      if (!!this.$route.params.refresh) {
+      }
+      this.$nextTick(() => {
+        this.getParams();
+      });
+    },
     methods: {
+        getParams () {
+          this.token = window.sessionStorage.getItem("token");
+          this.$nextTick(()=>{
+            this.uploadURL = this.$http.defaults.baseURL + "/TeacherSecretary/excelAddStudent?token="+this.token;
+          });
+        },
         getCollege(){
           this.college=[];
           this.$http
@@ -131,7 +160,21 @@
             }
           }
           )
-        }
+        },
+        beforeUpload(file) {
+          const isLt5M = file.size / 1024 / 1024 < 5;
+          if (!isLt5M) {
+            this.$message.warning('上传文件大小不能超过 5MB!');
+            return false;
+          }
+        },
+        handleError() {
+        this.$message.warning(`上传失败`);
+        },     
+        handleSuccess(){
+          this.$message.success(`上传成功`);
+          this.$refs.upload.clearFiles();
+        },
       }
   }
 </script>
