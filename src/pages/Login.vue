@@ -27,7 +27,7 @@
           </div>
           <div class="login-log" style="float:left">
             <el-checkbox v-model="isAutoLogin" checked="checked" style="color: #fff; font-weight: 200;">自动登录</el-checkbox>
-            <!-- <el-button style="float: right; padding: 0; font-size: 14px;" type="text" @click.native="forgot">忘记密码</el-button> -->
+           <el-button style="float: right; padding: 0; font-size: 14px;" type="text" @click.native="forgot">忘记密码</el-button>
           </div>
           <div class="selectRadio" style="float:right ">
             <el-radio-group v-model="identity" >
@@ -134,7 +134,7 @@
         userName: "",
         password: "",
         isLoading: false,
-        identity:1, 
+        identity:3,
         forgotEmail: "",
         isShowForgotDialog: false
       };
@@ -162,6 +162,7 @@
         formData.append('userName', this.userName)
         formData.append('password', this.password)
         formData.append('identity', this.identity)
+        formData.append('token', this.token)
         this.$http.post("/auth/login", formData, {
           hideLoading: true,
         }).then(res => {
