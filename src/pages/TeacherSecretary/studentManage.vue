@@ -21,7 +21,7 @@
               </el-select>
             </el-col>
 
-            <el-col :md="18" class="btn-group">
+            <el-col :md="15" class="btn-group">
               <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>
               <el-button type="success" size="normal" icon="el-icon-circle-plus" @click="showAdd"></el-button>
               <el-button type="warning" size="normal" icon="el-icon-delete" @click="handleDelete"></el-button>
