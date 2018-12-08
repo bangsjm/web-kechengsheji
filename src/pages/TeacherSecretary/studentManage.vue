@@ -11,9 +11,16 @@
             </el-col>
             <el-col :md="3">
               <el-select v-model="selectmajor" placeholder="请选择专业" @focus="getMajor()">
-                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorNumber"></el-option>
+                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorName"></el-option>
               </el-select>
             </el-col>
+
+            <el-col :md="3">
+              <el-select v-model="selectclass" placeholder="请选择班级" @focus="getClass()">
+                <el-option v-for="(v, k) in classes" :key="k" :label="v.className" :value="v.classId"></el-option>
+              </el-select>
+            </el-col>
+
             <el-col :md="18" class="btn-group">
               <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>
               <el-button type="success" size="normal" icon="el-icon-circle-plus" @click="showAdd"></el-button>
@@ -67,8 +74,10 @@
       return {
         selectcollege:"",
         selectmajor:"",
+        selectclass:"",
         college:[],
         majors:[],
+        classes:[]
       };
     },
     methods: {
@@ -89,11 +98,10 @@
         },
         getMajor(){
           this.majors = [];
-          this.$htto
-          .post("/TeacherSecretary/getMajor",{
-            params: {
-              college:this.selectcollege,
-            }},
+          let formData = new FormData()
+          formData.append('collegeNumber', this.selectcollege)
+          this.$http
+          .post("/TeacherSecretary/getMajor",formData,
           {
             hideLoading:true,
           }
@@ -105,6 +113,23 @@
             }
           }
 
+          )
+        },
+        getClass(){
+          this.classes = [];
+          let formData = new FormData()
+          formData.append('majorName',this.selectmajor)
+          this.$http
+          .post("/TeacherSecretary/getClass",formData,{
+            hideLoading:true,
+          }
+          )
+          .then(res => {
+            let body = res.data;
+            if(body.code == "200"){
+              this.classes = body.data;
+            }
+          }
           )
         }
       }
