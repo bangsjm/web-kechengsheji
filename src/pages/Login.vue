@@ -31,9 +31,11 @@
           </div>
           <div class="selectRadio" style="float:right ">
             <el-radio-group v-model="identity" >
-             <el-radio :label="1"><span class="word">教学秘书</span></el-radio>
-             <el-radio :label="2"><span class="word">教师</span></el-radio>
-             <el-radio :label="3"><span class="word">学生</span></el-radio>
+              <el-radio :label="1"><span class="word">学生</span></el-radio>
+              <el-radio :label="2"><span class="word">教师</span></el-radio>
+              <el-radio :label="3"><span class="word">教学秘书</span></el-radio>
+             
+
             </el-radio-group>
           </div>
           <div>
@@ -134,7 +136,7 @@
         userName: "",
         password: "",
         isLoading: false,
-        identity:3,
+        identity:1,
         forgotEmail: "",
         isShowForgotDialog: false
       };
@@ -188,9 +190,9 @@
             window.sessionStorage.setItem("userName", this.userName);
             window.sessionStorage.setItem("realName", body.data.realName);
             window.sessionStorage.setItem("token", body.data.token);
-            window.sessionStorage.setItem("identity", body.data.identity);
+            window.sessionStorage.setItem("identity",body.data.identity);
             window.sessionStorage.setItem("roleIds",body.data.roleIds);
-            window.sessionStorage.setItem("droleIds",body.data.droleIds);
+            window.sessionStorage.setItem("droleIds",body.data.identity);
             this.$http.defaults.headers.common['X-Auth-Token'] = body.data.token
             this.$router.push('/index');
             // getAllDict();
