@@ -1,7 +1,7 @@
 <template>
   <div class="fill-page">
     <el-card class="fill-card">
-     <Table2 :data="tableData" :checkData="checkTableData" :isShow="isShow" style="height: 100%;">
+     <Table2 :data="tableData" :checkData="checkTableData" :isShow="isShow" style="height: 100%;" @selection-change="handleSelectionChange">
        <template slot="header">
          <el-row :gutter="10">
             <el-col :md="3">
@@ -82,6 +82,43 @@
       </el-form>
     </el-dialog>
 
+<el-dialog title="新增"
+               custom-class="m1-dialog el-col-md-10 el-col-md-push-7 el-col-sm-14 el-col-sm-push-5 el-col-xs-22 el-col-xs-push-1"
+               :visible.sync="isShowAddDialog">
+      <el-form :model="form" :rules="rules" ref="addForm" label-width="80px">
+        <el-form-item label="姓名" prop="studentName">
+          <el-input v-model="form.studentName" placeholder="请输入姓名"></el-input>
+        </el-form-item>
+        <el-form-item label="学号" prop="studentNumber">
+          <el-input v-model="form.studentNumber" placeholder="请输入学号"></el-input>
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="confirmPassword">
+          <el-input type="password" v-model="form.confirmPassword" placeholder="请再次输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="性别" prop="sex">
+          <el-select placeholder="请选择性别" style="width: 100%;" v-model="form.sex">
+            <el-option  label="男" value="男"></el-option>
+            <el-option  label="女" value="女"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="入学年" prop="entranceYear">
+          <el-input v-model="form.entranceYear" placeholder="请输入入学年"></el-input>
+        </el-form-item>
+        <el-form-item label="年级" prop="grade">
+          <el-input v-model="form.grade" placeholder="请输入年级"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
+        </el-form-item>
+        <el-form-item label="" label-width="0" class="dialog-btn-group">
+          <el-button type="success" size="small" @click="handleAdd">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
+
       <el-dialog title="编辑"
               custom-class="m1-dialog el-col-md-10 el-col-md-push-7 el-col-sm-14 el-col-sm-push-5 el-col-xs-22 el-col-xs-push-1"
               :visible.sync="isShowEditDialog">
@@ -126,6 +163,24 @@
           callback();
         }
       };
+      var isStudentNumberExists=(rule, value, callback) => {
+        let formData = new FormData()
+        formData.append('studentNumber',value)
+        this.$http.post("/TeacherSecretary/isStudentNumberExists",formData,{
+                hideLoading:true,
+              }).then(res => {
+          let body = res.data;
+          if (body.code === "200") {
+            if(body.data==1){
+              callback(new Error("该学号已存在"));
+            }else{
+              callback();
+            }
+          } else {
+            this.$message.error(body.msg);
+          }
+        });
+      };
       return {
         selectcollege:"",
         selectmajor:"",
@@ -142,6 +197,8 @@
         searchNumber:"",
         isShowPwdDialog:false,
         isShowEditDialog:false,
+        isShowAddDialog: false,
+        selection:[],
         form: {
           studentName: "",
           studentNumber: "",
@@ -149,12 +206,36 @@
           sex: "",
           email: "",
           password:"",
+          grade:"",
+          entranceYear:"",
           confirmPassword:"",
         },
         rules: {
           password: [
             {required: true, message: "请输入密码", trigger: "blur"},
             {max: 100, message: "最大长度为 100 个字符", trigger: "blur"}
+          ],
+          studentName: [
+            {required: true, message: "请输入姓名", trigger: "blur"},
+            {max: 100, message: "最大长度为 100 个字符", trigger: "blur"}
+          ],
+          studentNumber: [
+            {required: true, message: "请输入学号", trigger: "blur"},
+            {max: 100, message: "最大长度为 100 个字符", trigger: "blur"},
+            {validator: isStudentNumberExists, trigger: "blur"}
+          ],
+          sex: [
+            {required: true, message: "请选择性别", trigger: "blur"},
+            {max: 100, message: "最大长度为 100 个字符", trigger: "blur"}
+          ],
+          entranceYear: [
+            {required: true, message: "请输入入学年份", trigger: "blur"},
+            {max: 100, message: "最大长度为 100 个字符", trigger: "blur"},
+          ],
+          grade: [
+            {required: true, message: "请输入年级", trigger: "blur"},
+            {max: 100, message: "最大长度为 100 个字符", trigger: "blur"},
+            {pattern: "[1-4]", message: "请输入正确年级", trigger: "blur"}
           ],
           confirmPassword: [
             {required: true, message: "请再次输入密码", trigger: "blur"},
@@ -180,7 +261,12 @@
       });
     },
     methods: {
-      
+        handleSelectionChange(selection) {
+          this.selection = [];
+          selection.forEach(e => {
+            this.selection.push(e.studentNumber);
+          });
+        },
         handleSizeChange(pageSize) {
           this.pageSize = pageSize;
           this.handleSearch();
@@ -196,14 +282,96 @@
           });
         },
         
+      showAdd() {
+        this.form = {
+          studentName: "",
+          studentNumber: "",
+          oldstudentNumber:"",
+          sex: "",
+          email: "",
+          password:"",
+          grade:"",
+          entranceYear:"",
+          confirmPassword:"",
+        };
+        this.isShowAddDialog = true;
+        this.$nextTick(() => {
+          this.$refs["addForm"].clearValidate();
+        });
+      },
+        handleDelete() {
+          if (this.selection.length === 0) {
+            this.$message({
+              message: "请选中要删除的数据",
+              type: "warning"
+            });
+            return;
+          }
+          this.$confirm("此操作将永久删除, 是否继续?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+            this.$http
+              .delete("/TeacherSecretary/deleteStudent", {
+                params: {
+                  deleteStudentNumbers: this.selection.join()
+                }
+              })
+              .then(res => {
+                let body = res.data;
+                if (body.code === "200") {
+                  if(body.data==1){
+                  this.$message({
+                    message: "删除成功",
+                    type: "success"
+                  });
+                  this.handleSearch();
+                  }else{
+                    this.$message({
+                    message: "该学生已选课，不能删除！",
+                    type: "warning"
+                  });
+                  }
+                } else {
+                  this.$message.error(body.msg);
+                }
+              });
+          });
+        },
         showEdit(row) {
             this.form.studentName=row.studentName;
             this.form.oldStudentNumber=row.studentNumber;
             this.form.studentNumber=row.studentNumber;
             this.form.sex=row.sex;
             this.form.email=row.email;
+            this.$nextTick(() => {
+            this.$refs["form"].clearValidate();
+          });
             this.isShowEditDialog = true;
         },
+            
+          handleAdd() {
+            this.$refs["addForm"].validate((pass, o) => {
+              if (pass) {
+                this.$http.post("/TeacherSecretary/addStudentSingal", this.form).then(res => {
+                  let body = res.data;
+                  if (body.code === "200") {
+                    this.$message({
+                      message: "保存成功",
+                      type: "success"
+                    });
+                    this.isShowAddDialog = false;
+                    this.handleSearch();
+                  } else {
+                    this.$message.error(body.msg);
+                  }
+                });
+              } else {
+                this.$message.error("表单输入不正确");
+              }
+            });
+          },
         handleEditPwd() {
           this.$refs["pwdForm"].validate((pass, o) => {
             if (pass) {
@@ -246,11 +414,24 @@
               this.$http.put("/TeacherSecretary/resetInformation", this.form).then(res => {
                 let body = res.data;
                 if (body.code === "200") {
-                  this.$message({
-                    message: "保存成功",
-                    type: "success"
-                  });
-                  this.isShowEditDialog = false;
+                    if(body.data==1){
+                      this.$message({
+                        message: "保存成功",
+                        type: "success"
+                      });
+                      this.isShowEditDialog = false;
+                    }else if(body.data==0){
+                        this.$message({
+                        message: "该学号已存在",
+                        type: "warning"
+                      });
+                    }else{
+                        this.$message({
+                        message: "该学生已经选课，不能更改学号",
+                        type: "warning"
+                      });
+                    }
+                  
                   this.handleSearch();
                 } else {
                   this.$message.error(body.msg);
@@ -304,6 +485,7 @@
           this.selectclass="";
           this.classes = [];
           let formData = new FormData()
+          formData.append('collegeNumber', this.selectcollege)
           formData.append('majorName',this.selectmajor)
           this.$http
           .post("/TeacherSecretary/getClass",formData,{
@@ -335,9 +517,13 @@
         
         handleSearch() {
           var selectclass=this.selectclass;
+          if(selectclass!=""){
           var year=selectclass.substring(selectclass.length-3,selectclass.length-1);
           var classNumber='0'+selectclass.charAt(selectclass.length-1);
           this.searchNumber=year+this.selectcollege+this.selectmajor+classNumber;
+          }else{
+            this.searchNumber=this.selectcollege+this.selectmajor;
+          }
           this.$http
             .get("/TeacherSecretary/search", {
               params: {
