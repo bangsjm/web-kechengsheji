@@ -288,7 +288,6 @@
     },
     methods: {
       handleSelectionChange(selection) {
-
         this.selection = [];
         selection.forEach(e => {
           this.selection.push(e.userId);
