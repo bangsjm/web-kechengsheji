@@ -79,7 +79,7 @@
           <el-input v-model="form.majorNumber" placeholder="请输入专业编号"></el-input>
         </el-form-item>
         <el-form-item label="所属学院" prop="collegeName">
-          <el-select v-model="selectcollege" placeholder="请选择学院" @focus="getCollege()">
+          <el-select v-model="selectcollege" disabled placeholder="请选择学院" @focus="getCollege()">
                 <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value="v.collegeNumber"></el-option>
               </el-select>
         </el-form-item>
@@ -256,19 +256,19 @@
             this.$http.put("/TeacherSecretary/updateMajor", this.form).then(res => {
               let body = res.data;
               if (body.code === "200") {
-
-                if(body.data >0){
+                if(body.data ==2){
                   this.$message({
                   message: "保存成功",
                   type: "success"
                 });
-                }else{
+                this.isShowEditDialog = false;
+                }else if(body.data == 0){
                   this.$message({
                   message: "该专业编号已存在",
                   type: "warning"
                 });
                 }
-                this.isShowEditDialog = false;
+
                 this.handleSearch();
               } else {
                 this.$message.error(body.msg);
@@ -296,16 +296,34 @@
           this.$http
             .delete("/TeacherSecretary/deleteMajor?", {
               params: {
-                deleteMajors: this.selection.join()
+                collegeNumber:this.selectcollege,
+                majorNumbers: this.selection.join()
               }
             })
             .then(res => {
               let body = res.data;
               if (body.code === "200") {
-                this.$message({
+                if(body.data > 0){
+                  this.$message({
                   message: "删除成功",
                   type: "success"
                 });
+                }else if(body.data == 0){
+                  this.$message({
+                  message: "该专业已有学生",
+                  type: "warning"
+                });
+                }else if(body.data == -1){
+                  this.$message({
+                  message: "该专业已开设课程",
+                  type: "warning"
+                });
+                }else if(body.data == -2){
+                  this.$message({
+                  message: "该专业已有老师",
+                  type: "warning"
+                });
+                }
                 this.handleSearch();
               } else {
                 this.$message.error(body.msg);
@@ -323,11 +341,18 @@
             this.$http.put("/TeacherSecretary/addMajor", this.form).then(res => {
               let body = res.data;
               if (body.code === "200") {
-                this.$message({
+                if(body.data >0){
+                  this.$message({
                   message: "保存成功",
                   type: "success"
                 });
                 this.isShowAddDialog = false;
+                }else{
+                  this.$message({
+                  message: "该专业已存在",
+                  type: "warning"
+                });
+                }
                 this.handleSearch();
               } else {
                 this.$message.error(body.msg);
