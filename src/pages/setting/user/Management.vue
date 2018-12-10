@@ -115,7 +115,7 @@
                :visible.sync="isShowEditDialog">
       <el-form :model="form" :rules="rules" ref="form" label-width="80px">
         <el-form-item label="用户名" prop="">
-          <el-input v-model="form.userName"disabled="disabled" placeholder="请输入用户名"></el-input>
+          <el-input v-model="form.userName" disabled="disabled" placeholder="请输入用户名"></el-input>
         </el-form-item>
         <el-form-item label="真实姓名" prop="realName">
           <el-input v-model="form.realName" placeholder="请输入真实名称"></el-input>

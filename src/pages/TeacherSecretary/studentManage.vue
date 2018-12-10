@@ -40,6 +40,7 @@
             </el-col>
           </el-row>
        </template>
+
        <template slot="columns">
           <el-table-column type="selection" width="45">
           </el-table-column>
@@ -64,6 +65,7 @@
             </template>
           </el-table-column>
         </template>
+        
         <template slot="footer">
           <el-pagination layout="pager, sizes, jumper" :total="total" @size-change="handleSizeChange"
                          @current-change="handleCurrentChange">
