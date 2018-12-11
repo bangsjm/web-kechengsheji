@@ -30,7 +30,7 @@
             </el-col>
             <el-col :md="12" class="btn-group">
               <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>
-              <el-button type="success" size="normal" icon="el-icon-circle-plus" @click="showAdd"></el-button>
+              <el-button type="success" size="normal" icon="el-icon-circle-plus" @click="handleAdd"></el-button>
               <el-button type="warning" size="normal" icon="el-icon-delete" @click="handleDelete"></el-button>
             </el-col>
           </el-row>
@@ -42,7 +42,7 @@
           </el-table-column>
           <el-table-column prop="courseName" label="课程名">
           </el-table-column>
-          <el-table-column prop="couserCredit" label="学分">
+          <el-table-column prop="courseCredit" label="学分">
           </el-table-column>
           <el-table-column prop="courseHour" label="学时">
           </el-table-column>
@@ -56,6 +56,7 @@
         </template>
      </Table2>
     </el-card>
+
   </div>
 </template>
 
@@ -80,11 +81,61 @@
         pageSize: 10,
         total: 0,
         handlePage: 1,
+        selection:[],
+
       };
 
     },
+    created() {
+      this.handleSearch();
+    },
+    activated() {
+      if (!!this.$route.params.refresh) {
+        this.handleSearch();
+      }
+    },
     methods:{
       
+        handleSelectionChange(selection) {
+          this.selection = [];
+          selection.forEach(e => {
+            this.selection.push(e.studentNumber);
+          });
+        },
+        handleAdd(){
+            if(this.selectcollege==""){
+              this.$message({
+              message: "请选择学院",
+              type: "warning"
+            });
+            }else if(this.selectmajor==""){
+              this.$message({
+              message: "请选择专业",
+              type: "warning"
+            });
+            }else if(this.selectgrade==""){
+              this.$message({
+              message: "请选择年级",
+              type: "warning"
+            });
+            }else if(this.selectterm==""){
+              this.$message({
+              message: "请选择学期",
+              type: "warning"
+            });
+            }else{
+              this.$router.push({
+                name: "添加教学计划",
+                params: {
+                selectcollege:this.selectcollege,
+                selectmajor:this.selectmajor,
+                selectgrade:this.selectgrade,
+                selectterm:this.selectterm
+                }  
+              });
+            }
+
+        },
         handleSizeChange(pageSize) {
           this.pageSize = pageSize;
           this.handleSearch();
@@ -150,6 +201,8 @@
                 majorNumber: this.selectmajor,
                 grade: this.selectgrade,
                 term:this.selectterm,
+                pageNum:this.pageNum,
+                pageSize:this.pageSize,
               }
             })
           .then(res => {
