@@ -98,31 +98,37 @@
                custom-class="m1-dialog el-col-md-10 el-col-md-push-7 el-col-sm-14 el-col-sm-push-5 el-col-xs-22 el-col-xs-push-1"
                :visible.sync="isShowEditDialog">
       <el-form :model="form" :rules="rules" ref="form" label-width="80px">
-        <el-form-item label="课程编号" prop="courseNumber">
-          <el-input v-model="form.courseNumber" placeholder="请输入课程编号"></el-input>
-        </el-form-item>
-        <el-form-item label="课程名" prop="courseName">
+       <el-form-item label="课程名" prop="courseName">
           <el-input v-model="form.courseName" placeholder="请输入课程名"></el-input>
         </el-form-item>
-        <el-form-item label="课程性质" prop="courseNature">
-          <el-input v-model="form.courseNature" placeholder="请输入课程性质"></el-input>
+        <el-form-item label="课程号" prop="courseNumbers">
+          <el-input v-model="form.courseNumber" placeholder="请输入课程编号"></el-input>
         </el-form-item>
-        <el-form-item label="学分" prop="courseCredit">
+        <el-form-item label="学分" prop="courseCredits">
           <el-input v-model="form.courseCredit" placeholder="请输入学分"></el-input>
         </el-form-item>
-        <el-form-item label="学时" prop="courseHour">
+        <el-form-item label="学时" prop="courseHours">
           <el-input v-model="form.courseHour" placeholder="请输入学时"></el-input>
+        </el-form-item>
+        <el-form-item label="课程性质" prop="courseNature">
+          <el-select v-model="selectCourseNature" placeholder="请选择课程性质" >
+                <el-option label="必修" value="必修"></el-option>
+                <el-option label="选修" value="选修"></el-option>
+                <el-option label="实验" value="实验"></el-option>
+                <el-option label="实践" value="实践"></el-option>
+              </el-select>
         </el-form-item>
         <el-form-item label="所属学院" prop="collegeName">
           <el-select v-model="selectcollege" disabled placeholder="请选择学院" @focus="getCollege()">
                 <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value="v.collegeNumber"></el-option>
               </el-select>
         </el-form-item>
-        <el-form-item label="开课专业" prop="majorName">
-          <el-select v-model="selectmajor" disabled placeholder="请选择学院" @focus="getMajor()">
+        <el-form-item label="所属专业" prop="majorName">
+          <el-select v-model="selectmajor"  placeholder="请选择专业" @focus="getMajor()">
                 <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorNumber"></el-option>
               </el-select>
         </el-form-item>
+        
 
         <el-form-item label="" label-width="0" class="dialog-btn-group">
           <el-button type="success" size="small" @click="handleSave">保存</el-button>
@@ -183,7 +189,8 @@
           majorNumber:'',
           collegeNumber:'',
           oldMajorNumber:'',
-          oldCollegeNumber:''
+          oldCollegeNumber:'',
+          oldCourseNumber:''
         },
         rules: {  
           // majorName: [
@@ -227,16 +234,20 @@
     methods: {
        showEdit(row){
         this.isShowEditDialog = true;
-        this.form.majorName = row.majorName;
-        this.form.oldMajorNumber = row.majorNumber;
+        this.selectmajor = row.majorNumber;
+        this.form.courseNumber= row.courseNumber;
+        this.form.courseName = row.courseName;
         this.form.majorNumber = row.majorNumber;
         this.form.collegeNumber = row.selectcollege;
-        this.form.openYear = row.openYear;
+        this.form.courseNature = row.courseNature;
+        this.form.courseHour = row.courseHour;
+        this.form.courseCredit = row.courseCredit;
+        this.form.oldCourseNumber = row.courseNumber;
        },
        handleSelectionChange(selection) {
         this.selection = [];
         selection.forEach(e => {
-          this.selection.push(e.majorNumber);
+          this.selection.push(e.courseNumber);
         });
       },
           getParams () {
@@ -389,19 +400,20 @@
         this.$refs["form"].validate((pass, o) => {
           if (pass) {
             let formData = new FormData();
-            this.form.collegeNumber = this.selectcollege;
-            this.$http.put("/TeacherSecretary/updateMajor", this.form).then(res => {
+            this.form.majorNumber = this.selectmajor;
+            this.form.courseNature = this.selectCourseNature;
+            this.$http.put("/TeacherSecretary/updateCourse", this.form).then(res => {
               let body = res.data;
               if (body.code === "200") {
-                if(body.data ==2){
+                if(body.data >0){
                   this.$message({
                   message: "保存成功",
                   type: "success"
                 });
                 this.isShowEditDialog = false;
-                }else if(body.data == 0){
+                }else if(body.data <0){
                   this.$message({
-                  message: "该专业编号已存在",
+                  message: "该课程号已存在",
                   type: "warning"
                 });
                 }
@@ -417,6 +429,7 @@
         });
       },
 
+      //  批量删除
       handleDelete() {
         if (this.selection.length === 0) {
           this.$message({
@@ -431,10 +444,9 @@
           type: "warning"
         }).then(() => {
           this.$http
-            .delete("/TeacherSecretary/deleteMajor?", {
+            .delete("/TeacherSecretary/deleteCourse", {
               params: {
-                collegeNumber:this.selectcollege,
-                majorNumbers: this.selection.join()
+                courseNumbers: this.selection.join()
               }
             })
             .then(res => {
@@ -445,19 +457,9 @@
                   message: "删除成功",
                   type: "success"
                 });
-                }else if(body.data == 0){
+                }else{ 
                   this.$message({
-                  message: "该专业已有学生",
-                  type: "warning"
-                });
-                }else if(body.data == -1){
-                  this.$message({
-                  message: "该专业已开设课程",
-                  type: "warning"
-                });
-                }else if(body.data == -2){
-                  this.$message({
-                  message: "该专业已有老师",
+                  message: "已有学生选择该课",
                   type: "warning"
                 });
                 }
@@ -476,7 +478,6 @@
             let formData = new FormData();
             this.form.collegeNumber = this.selectcollege;
             this.form.courseNature = this.selectCourseNature;
-
             this.form.majorNumber = this.selectmajor;
             this.$http.put("/TeacherSecretary/addCourse", this.form).then(res => {
               let body = res.data;
