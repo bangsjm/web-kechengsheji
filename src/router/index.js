@@ -21,6 +21,7 @@ import studentManage from '@/pages/TeacherSecretary/studentManage'
 import courseManage from '@/pages/TeacherSecretary/courseManage'
 import teachingPlanManage from '@/pages/TeacherSecretary/teachingPlanManage'
 import teacherManage from '@/pages/TeacherSecretary/teacherManage'
+import AddTeachingPlan from '@/pages/TeacherSecretary/AddTeachingPlan'
 
 Vue.use(Router)
 
@@ -93,6 +94,11 @@ const routes = [
       meta:{
         keepAlive:true
       }
+    },
+    {
+      path:'AddTeachingPlan',
+      name:'添加教学计划',
+      component:AddTeachingPlan,
     },
   ]
 },
