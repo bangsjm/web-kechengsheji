@@ -29,7 +29,7 @@
               </el-select>
             </el-col>
             <el-col :md="12" class="btn-group">
-              <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>  
+              <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>
             </el-col>
           </el-row>
        </template>
@@ -40,11 +40,16 @@
           </el-table-column>
           <el-table-column prop="courseName" label="课程名">
           </el-table-column>
-          <el-table-column prop="couserCredit" label="学分">
+          <el-table-column prop="courseCredit" label="学分">
           </el-table-column>
           <el-table-column prop="courseHour" label="学时">
           </el-table-column>
           <el-table-column prop="courseNature" label="课程性质">
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
+            </template>
           </el-table-column>
         </template>
         <template slot="footer">
@@ -54,6 +59,7 @@
         </template>
      </Table2>
     </el-card>
+
   </div>
 </template>
 
@@ -61,7 +67,7 @@
   import Table2 from "@/components/table/Table1";
 
   export default {
-    name: "ObligatoryManage",
+    name: "teachingPlanManage",
     components: {
       Table2
     },
@@ -70,6 +76,7 @@
         selectcollege:"",
         selectmajor:"",
         selectgrade:"",
+        majorName:'',
         selectterm:"",
         college:[],
         majors:[],
@@ -78,11 +85,73 @@
         pageSize: 10,
         total: 0,
         handlePage: 1,
+        selection:[],
+
       };
 
     },
+    created() {
+      this.handleSearch();
+    },
+    activated() {
+      if (!!this.$route.params.refresh) {
+        this.handleSearch();
+      }
+    },
     methods:{
       
+        handleSelectionChange(selection) {
+          this.selection = [];
+          selection.forEach(e => {
+            this.selection.push(e.studentNumber);
+          });
+        },
+        showEdit(row){
+           this.$router.push({
+                name: "进行排课",
+                params: {
+                courseNumber:row.courseNumber,
+                selectcollege:this.selectcollege,
+                selectmajor:this.selectmajor,
+                selectgrade:this.selectgrade,
+                selectterm:this.selectterm
+                }  
+              });
+        },
+        handleAdd(){
+            if(this.selectcollege==""){
+              this.$message({
+              message: "请选择学院",
+              type: "warning"
+            });
+            }else if(this.selectmajor==""){
+              this.$message({
+              message: "请选择专业",
+              type: "warning"
+            });
+            }else if(this.selectgrade==""){
+              this.$message({
+              message: "请选择年级",
+              type: "warning"
+            });
+            }else if(this.selectterm==""){
+              this.$message({
+              message: "请选择学期",
+              type: "warning"
+            });
+            }else{
+              this.$router.push({
+                name: "添加教学计划",
+                params: {
+                selectcollege:this.selectcollege,
+                selectmajor:this.selectmajor,
+                selectgrade:this.selectgrade,
+                selectterm:this.selectterm
+                }  
+              });
+            }
+
+        },
         handleSizeChange(pageSize) {
           this.pageSize = pageSize;
           this.handleSearch();
@@ -148,6 +217,8 @@
                 majorNumber: this.selectmajor,
                 grade: this.selectgrade,
                 term:this.selectterm,
+                pageNum:this.pageNum,
+                pageSize:this.pageSize,
               }
             })
           .then(res => {

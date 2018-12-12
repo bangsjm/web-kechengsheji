@@ -178,6 +178,7 @@
         selectcollege:"",
         college:[],
         majors:[],
+        majorNumber:'',
         selectmajor:'',
         selectCourseNature:'',
         form: {
@@ -232,17 +233,37 @@
       }
     },
     methods: {
+      getMajorNumber(couNum){
+        let formData = new FormData();
+        formData.append('courseNumber',couNum);
+        this.$http
+          .post("/TeacherSecretary/getMajorNumber",formData,
+          {
+            hideLoading:true,
+          }
+          )
+          .then(res => {
+            let body = res.data;
+            if(body.code === "200"){
+              this.selectmajor = body.data;
+            }
+          }
+          )
+      },
        showEdit(row){
-        this.isShowEditDialog = true;
-        this.selectmajor = row.majorNumber;
+        if(this.selectmajor == ""){
+          this.getMajorNumber(row.courseNumber);
+        }
+        
         this.form.courseNumber= row.courseNumber;
         this.form.courseName = row.courseName;
         this.form.majorNumber = row.majorNumber;
         this.form.collegeNumber = row.selectcollege;
-        this.form.courseNature = row.courseNature;
+        this.selectCourseNature = row.courseNature;
         this.form.courseHour = row.courseHour;
         this.form.courseCredit = row.courseCredit;
         this.form.oldCourseNumber = row.courseNumber;
+        this.isShowEditDialog = true;
        },
        handleSelectionChange(selection) {
         this.selection = [];

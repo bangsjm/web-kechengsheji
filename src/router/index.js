@@ -24,6 +24,7 @@ import teacherManage from '@/pages/TeacherSecretary/teacherManage'
 import AddTeachingPlan from '@/pages/TeacherSecretary/AddTeachingPlan'
 
 import ObligatoryManage from '@/pages/TeacherSecretary/ObligatoryManage'
+import updateObligatoryManage from '@/pages/TeacherSecretary/updateObligatoryManage'
 
 Vue.use(Router)
 
@@ -66,8 +67,13 @@ const routes = [
       }
     },
     {
+      path:'updateObligatoryManage',
+      name:'进行排课',
+      component:updateObligatoryManage,
+    },
+    {
       path:'ObligatoryManage',
-      name:'必修排课',
+      name:'必修管理',
       component:ObligatoryManage,
       meta:{
         keepAlive:true
