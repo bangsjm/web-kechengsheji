@@ -6,32 +6,16 @@
          <el-row :gutter="10">
             <el-col :md="3">
               <el-select v-model="selectcollege" placeholder="请选择学院" @focus="getCollege()" no-data-text="暂无学院">
-                <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value=v.collegeNumber></el-option>
+                <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value="v.collegeNumber"></el-option>
               </el-select>
             </el-col>
             <el-col :md="3">
               <el-select v-model="selectmajor" placeholder="请选择专业" @focus="getMajor()" no-data-text="暂无专业">
-                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value=v.majorNumber></el-option>
+                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorNumber"></el-option>
               </el-select>
             </el-col>
-            <el-col :md="3">
-              <el-select v-model="selectgrade" placeholder="请选择年级" @focus="getGrade()" no-data-text="暂无年级">
-                <el-option label="大一" value="1"></el-option>
-                <el-option label="大二" value="2"></el-option>
-                <el-option label="大三" value="3"></el-option>
-                <el-option label="大四" value="4"></el-option>
-              </el-select>
-            </el-col>
-            <el-col :md="3">
-              <el-select v-model="selectterm" @focus="getTerm()" placeholder="请选择学期"  no-data-text="暂无学期">
-                <el-option label="一学期" value="1"></el-option>
-                <el-option label="二学期" value="2"></el-option>
-              </el-select>
-            </el-col>
-            <el-col :md="12" class="btn-group">
-              <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>
-              <el-button type="success" size="normal" icon="el-icon-circle-plus" @click="handleAdd"></el-button>
-              <el-button type="warning" size="normal" icon="el-icon-delete" @click="handleDelete"></el-button>
+            <el-col :md="18" class="btn-group">
+              <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>  
             </el-col>
           </el-row>
        </template>
@@ -48,6 +32,12 @@
           </el-table-column>
           <el-table-column prop="courseNature" label="课程性质">
           </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="showTeachers(scope.row)">排课</el-button>
+              <el-button type="text" size="small" @click="showDetails(scope.row)">详情</el-button>
+            </template>
+          </el-table-column>
         </template>
         <template slot="footer">
           <el-pagination layout="pager, sizes, jumper" :total="total" @size-change="handleSizeChange"
@@ -57,6 +47,13 @@
      </Table2>
     </el-card>
 
+    <el-dialog title="选择教师"
+               custom-class="m1-dialog el-col-md-10 el-col-md-push-7 el-col-sm-14 el-col-sm-push-5 el-col-xs-22 el-col-xs-push-1"
+               :visible.sync="isShowTeachers">
+               <el-tree highlight-current :filter-node-method="filterNode" :data="treeData" empty-text="暂无教师" show-checkbox
+                 node-key="teacherNumber"  :props="defaultProps" @node-click="handleTreeNodeClick" default-expand-all ref="tree2"></el-tree>
+                <el-button  style="float:right,padding-bottom:3px" type="success" size="small" @click="handleAddTeacher">保存</el-button>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,7 +61,7 @@
   import Table2 from "@/components/table/Table1";
 
   export default {
-    name: "teachingPlanManage",
+    name: "ElectiveManage",
     components: {
       Table2
     },
@@ -81,94 +78,17 @@
         pageSize: 10,
         total: 0,
         handlePage: 1,
-        selection:[],
-
+        isShowTeachers:false,
+        defaultProps: {
+          children: "children",
+          label: "teacherName"
+        },
+        treeData:[],
       };
 
     },
-    created() {
-      this.handleSearch();
-    },
-    activated() {
-      if (!!this.$route.params.refresh) {
-        this.handleSearch();
-      }
-    },
     methods:{
       
-        handleSelectionChange(selection) {
-          this.selection = [];
-          selection.forEach(e => {
-            this.selection.push(e.otId);
-          });
-        },
-        handleDelete() {
-          if (this.selection.length === 0) {
-            this.$message({
-              message: "请选中要删除的数据",
-              type: "warning"
-            });
-            return;
-          }
-          this.$confirm("此操作将永久删除, 是否继续?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }).then(() => {
-            this.$http
-              .delete("/TeachingPlan/deleteTeachingPlan", {
-                params: {
-                  deleteOtIds: this.selection.join()
-                }
-              })
-              .then(res => {
-                let body = res.data;
-                if (body.code === "200") {
-                  this.$message({
-                    message: "删除成功",
-                    type: "success"
-                  });
-                  this.handleSearch();
-                } else {
-                  this.$message.error(body.msg);
-                }
-              });
-          });
-        },
-        handleAdd(){
-            if(this.selectcollege==""){
-              this.$message({
-              message: "请选择学院",
-              type: "warning"
-            });
-            }else if(this.selectmajor==""){
-              this.$message({
-              message: "请选择专业",
-              type: "warning"
-            });
-            }else if(this.selectgrade==""){
-              this.$message({
-              message: "请选择年级",
-              type: "warning"
-            });
-            }else if(this.selectterm==""){
-              this.$message({
-              message: "请选择学期",
-              type: "warning"
-            });
-            }else{
-              this.$router.push({
-                name: "添加教学计划",
-                params: {
-                selectcollege:this.selectcollege,
-                selectmajor:this.selectmajor,
-                selectgrade:this.selectgrade,
-                selectterm:this.selectterm
-                }  
-              });
-            }
-
-        },
         handleSizeChange(pageSize) {
           this.pageSize = pageSize;
           this.handleSearch();
@@ -176,6 +96,70 @@
         handleCurrentChange(pageNum) {
           this.pageNum = pageNum;
           this.handleSearch();
+        },
+        showDetails(row){
+              this.$router.push({
+                name: "选修详情",
+                params: {
+                courseNumber:row.courseNumber,
+                }  
+              });
+        },
+        handleAddTeacher(){
+          var selectTeachers=this.$refs["tree2"].getCheckedKeys();
+          if (selectTeachers.length === 0) {
+            this.$message({
+              message: "请选中要添加的数据",
+              type: "warning"
+            });
+            return;
+          }
+          
+          this.$confirm("是否继续?", "提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning"
+          }).then(() => {
+          this.$http
+            .get("/ElectiveManage/addTeacher", {
+              params: {
+                selectTeachers:selectTeachers.join(),
+                courseNumber:this.selectCourse,
+              }
+            })
+          .then(res => {
+            let body = res.data;
+            if (body.code === "200") {
+                this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+                this.isShowTeachers = false;
+              }
+            });
+            
+          });
+        },
+        showTeachers(row){
+          let formData = new FormData()
+          this.selectCourse=row.courseNumber;
+          formData.append('collegeNumber', this.selectcollege)
+          formData.append('majorNumber', this.selectmajor) 
+          this.$http
+            .post("/ElectiveManage/getTeacher",formData,{
+            hideLoading: true,
+          }
+            )
+            .then(res => {
+              let body = res.data;
+              if (body.code === "200") {
+                this.treeData=body.data;
+              }else {
+                this.$message.error(body.msg);
+              }
+
+            });
+          this.isShowTeachers = true;
         },
         getCollege(){
             this.selectcollege="";
@@ -215,6 +199,8 @@
               let body = res.data;
               if(body.code === "200"){
                 this.majors = body.data;
+              }else {
+                this.$message.error(body.msg);
               }
             }
             )
@@ -228,14 +214,12 @@
           },
         handleSearch() {
           this.$http
-            .get("/TeachingPlan/search", {
+            .get("/ElectiveManage/search", {
               params: {
                 collegeNumber:this.selectcollege,
                 majorNumber: this.selectmajor,
-                grade: this.selectgrade,
-                term:this.selectterm,
                 pageNum:this.pageNum,
-                pageSize:this.pageSize,
+                pageSize:this.pageSize
               }
             })
           .then(res => {
