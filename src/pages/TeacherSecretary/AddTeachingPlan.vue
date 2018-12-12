@@ -88,7 +88,7 @@
             
             if (this.selection.length === 0) {
               this.$message({
-                message: "请选中要添加的数据",
+                message: "请选中要添加的课程",
                 type: "warning"
               });
               return;

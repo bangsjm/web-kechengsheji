@@ -404,6 +404,8 @@
         },
         showEditPwd(row) {
           this.form.studentNumber = row.studentNumber;
+          this.form.password="";
+          this.form.confirmPassword="";
           this.isShowPwdDialog = true;
           this.$nextTick(() => {
             this.$refs["pwdForm"].clearValidate();
