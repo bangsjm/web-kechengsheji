@@ -12,7 +12,7 @@
             </el-col>
             <el-col :md="3">
               <el-select v-model="selectmajor" placeholder="请选择专业" @focus="getMajor()">
-                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorNumber"></el-option>
+                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value=v.majorNumber></el-option>
               </el-select>
             </el-col>
 
@@ -76,16 +76,21 @@
           </el-select>
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password" placeholder="请输入密码"></el-input>
+          <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item label="确认密码" prop="sure_password">
-          <el-input v-model="form.sure_password" placeholder="请再次输入密码"></el-input>
+          <el-input type="password" v-model="form.sure_password" placeholder="请再次输入密码"></el-input>
         </el-form-item>
         <el-form-item label="入职时间" prop="hiredate">
           <el-input v-model="form.hiredate" placeholder="请输入入职时间"></el-input>
         </el-form-item>
         <el-form-item label="职称" prop="prof">
-          <el-input v-model="form.prof" placeholder="请输入职称"></el-input>
+        <el-select v-model="form.prof" placeholder="请选择职称">
+                <el-option label="讲师" value="讲师"></el-option>
+                <el-option label="教师" value="教师"></el-option>
+                <el-option label="教授" value="教授"></el-option>
+                <el-option label="副教授" value="副教授"></el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
@@ -108,19 +113,24 @@
         </el-form-item>
         <el-form-item label="学院" prop="collegeNumber">
           <el-select v-model="selectcollege" @focus="getCollege()">
-                <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value="v.collegeNumber"></el-option>
+                <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value=v.collegeNumber></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="专业" prop="majorNumber">
-          <el-select v-model="selectmajor" @focus="getMajor()">
-                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorNumber"></el-option>
+          <el-select v-model="selectmajor" @focus="getMajor()" >
+                <el-option v-for="v in majors" :key="v.majorNumber" :label="v.majorName" :value="v.majorNumber+''"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间" prop="hiredate">
           <el-input v-model="form.hiredate" placeholder="请输入入职时间"></el-input>
         </el-form-item>
         <el-form-item label="职称" prop="prof">
-          <el-input v-model="form.prof" placeholder="请输入职称"></el-input>
+        <el-select v-model="form.prof" placeholder="请选择职称">
+                <el-option label="讲师" value="讲师"></el-option>
+                <el-option label="教师" value="教师"></el-option>
+                <el-option label="教授" value="教授"></el-option>
+                <el-option label="副教授" value="副教授"></el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="form.email" placeholder="请输入邮箱"></el-input>
@@ -148,9 +158,7 @@
         let formData = new FormData();
         formData.append('teacherNumber',value);
         this.$http.post("/TeacherSecretary/Teacherinfo", formData,{
-          
           hideLoading: true,
-        
         }).then(resu => {
           if (resu.data.data!= null) {
             callback(new Error("该教工号已存在！"));
@@ -167,6 +175,19 @@
         } else {
           callback();
         }
+      };
+      var emailValidate = (rule, value, callback) => {
+        let formData = new FormData();
+        formData.append('email',value);
+        this.$http.post("/TeacherSecretary/Emailinfo", formData,{
+          hideLoading: true,
+        }).then(resu => {
+          if (resu.data!=="") {
+            callback(new Error("该邮箱已存在！"));
+          } else {
+            callback();
+          }
+        })
       };
       var hiredateValidate = (rule, value, callback) => {
          if (value.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/) === null) {
@@ -206,12 +227,6 @@
             {required: true, message: "请输入姓名", trigger: "blur"},
             {max: 20, message: "最大长度为 20 个字符", trigger: "blur"}
           ],
-          selectcollege: [
-            {required: true, message: "请选择学院", trigger: "blur"},
-          ],
-          selectmajor: [
-            {required: true, message: "请选择专业", trigger: "blur"},
-          ],
           password: [
             {required: true, message: "请输入密码", trigger: "blur"},
             {max: 20, message: "最大长度为 20 个字符", trigger: "blur"}
@@ -226,13 +241,11 @@
             {max: 100, message: "最大长度为 8 个字符", trigger: "blur"},
             {validator: hiredateValidate, trigger: "blur"}
           ],
-          prof: [
-            {required: true, message: "请选择教师职称", trigger: "blur"},
-          ],
           email: [
             {required: true, message:"请输入邮箱", trigger:"blur"},
             {max: 100, message: "最大长度为 100 个字符", trigger: "blur"},
-            {pattern: email, message: "邮箱格式不正确", trigger: "blur"}
+            {pattern: email, message: "邮箱格式不正确", trigger: "blur"},
+            {validator: emailValidate, trigger: "blur"},
           ],
         },
         isShowAddDialog:false,
@@ -261,7 +274,7 @@
           this.selectcollege="",
           this.selectmajor="",
           this.college=[];
-          this.majors = [];
+          this.majors = "";
           this.$http
           .post("/TeacherSecretary/getCollege","",{
           hideLoading: true,
@@ -293,6 +306,7 @@
           }
 
           )
+          
         },
         showAdd() {
         this.form = {
@@ -321,14 +335,23 @@
               email:row.email,
               prof:row.prof,
               selectcollege:this.selectcollege,
-              selectmajor:this.selectmajor,
         };
+        let formData=new FormData();
+        formData.append('otherteacherNumber',row.teacherNumber);
+        formData.append('collegeNumber',this.selectcollege);
+        this.$http.post("/TeacherSecretary/Teacherupdatecheck", formData).then(res => {
+              let body = res.data;
+              if (body.code === "200") {
+              this.selectmajor=body.data.majorNumber;
+              } 
+            });
+
       },
       resetPwd(row) {
         let formData=new FormData();
         formData.append('teacherNumber',row.teacherNumber);
         
-            this.$confirm("此操作将永久删除, 是否继续?", "提示", {
+            this.$confirm("此操作将重置密码, 是否继续?", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning"
@@ -419,14 +442,17 @@
             this.$http.put("/TeacherSecretary/Teacherupdate", this.form).then(res => {
               let body = res.data;
 
-              if (body.code === "200") {
+              if (body.code === "200"&&body.data==1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
                 });
                 this.isShowEditDialog = false;
                 this.handleSearch();
-              } else {
+              }else if(body.data=2){
+               this.$message.error("该老师已有教学课程");
+              } 
+              else {
                 this.$message.error(body.msg);
               }
             });
