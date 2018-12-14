@@ -157,9 +157,6 @@ const routes = [
       path:'ElectiveDetails',
       name:'选修详情',
       component:ElectiveDetails,
-      meta:{
-        keepAlive:true
-      }
     },
   ]
 },

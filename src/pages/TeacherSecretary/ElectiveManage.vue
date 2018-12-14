@@ -130,11 +130,18 @@
           .then(res => {
             let body = res.data;
             if (body.code === "200") {
+              if(body.data==1){
                 this.$message({
                   message: "保存成功",
                   type: "success"
                 });
                 this.isShowTeachers = false;
+              }else{
+                this.$message({
+                  message: "部分教师已经排课，不能重复排课",
+                  type: "warning"
+                });
+              }
               }
             });
             
@@ -143,8 +150,8 @@
         showTeachers(row){
           let formData = new FormData()
           this.selectCourse=row.courseNumber;
-          formData.append('collegeNumber', this.selectcollege)
-          formData.append('majorNumber', this.selectmajor) 
+          formData.append('collegeNumber', row.collegeNumber)
+          formData.append('majorNumber', row.majorNumber) 
           this.$http
             .post("/ElectiveManage/getTeacher",formData,{
             hideLoading: true,

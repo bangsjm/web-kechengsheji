@@ -87,7 +87,6 @@
 
     },
     created() {
-      this.handleSearch();
     },
     activated() {
       if (!!this.$route.params.refresh) {
@@ -227,6 +226,26 @@
             this.selectterm="";
           },
         handleSearch() {
+          if(this.selectcollege==""){
+              this.$message({
+              message: "请选择学院",
+              type: "warning"
+            });
+            }else if(this.selectmajor==""){
+              this.$message({
+              message: "请选择专业",
+              type: "warning"
+            });
+            }else if(this.selectgrade==""){
+              this.$message({
+              message: "请选择年级",
+              type: "warning"
+            });
+            }else if(this.selectterm==""){
+              this.$message({
+              message: "请选择学期",
+              type: "warning"
+            });}else{
           this.$http
             .get("/TeachingPlan/search", {
               params: {
@@ -259,6 +278,7 @@
               }
               }
             });
+            }
         },
     }
   }
