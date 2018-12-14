@@ -104,7 +104,7 @@
     <el-dialog title="编辑"
                custom-class="m1-dialog el-col-md-10 el-col-md-push-7 el-col-sm-14 el-col-sm-push-5 el-col-xs-22 el-col-xs-push-1"
                :visible.sync="isShowEditDialog">
-      <el-form :model="form" :rules="rules" ref="form" label-width="80px">
+      <el-form :model="form" :rules="rules1" ref="form" label-width="80px">
         <el-form-item label="教工号" prop="otherteacherNumber">
           <el-input v-model="form.otherteacherNumber" disabled="disabled" placeholder="请输入教工号"></el-input>
         </el-form-item>
@@ -154,6 +154,7 @@
       Table2
     },
     data() {
+      // 用户名查重验证
       var userValidate = (rule, value, callback) => {
         let formData = new FormData();
         formData.append('teacherNumber',value);
@@ -167,6 +168,7 @@
           }
         })
       };
+      // 确认密码验证
       var passwordValidate = (rule, value, callback) => {
         if (value === "") {
           callback(new Error("请再次输入密码"));
@@ -176,19 +178,36 @@
           callback();
         }
       };
+      // 邮箱唯一验证
       var emailValidate = (rule, value, callback) => {
         let formData = new FormData();
         formData.append('email',value);
         this.$http.post("/TeacherSecretary/Emailinfo", formData,{
           hideLoading: true,
-        }).then(resu => {
-          if (resu.data!=="") {
-            callback(new Error("该邮箱已存在！"));
+        }).then(res => {
+          if (res.data.data===null||res.data.data==="") {
+                        callback();
+
           } else {
-            callback();
+                        callback(new Error("该邮箱已存在！"));
           }
         })
       };
+      var emailValidateTeacherNumber = (rule, value, callback) => {
+        let formData = new FormData();
+        formData.append('email',value);
+        this.$http.post("/TeacherSecretary/emailValidateTeacherNumber", formData,{
+          hideLoading: true,
+        }).then(res => {
+          if (res.data.data===this.form.otherteacherNumber||res.data.data===null) {
+                        callback();
+
+          } else {
+                        callback(new Error("该邮箱已存在！"));
+          }
+        })
+      };
+      // 日期格式验证
       var hiredateValidate = (rule, value, callback) => {
          if (value.match(/^(\d{1,4})(-|\/)(\d{1,2})\2(\d{1,2})$/) === null) {
           callback(new Error("日期格式错误"));
@@ -246,6 +265,24 @@
             {max: 100, message: "最大长度为 100 个字符", trigger: "blur"},
             {pattern: email, message: "邮箱格式不正确", trigger: "blur"},
             {validator: emailValidate, trigger: "blur"},
+          ],
+        },
+        
+        rules1: {
+          teacherName: [
+            {required: true, message: "请输入姓名", trigger: "blur"},
+            {max: 20, message: "最大长度为 20 个字符", trigger: "blur"}
+          ],
+          hiredate: [
+            {required: true, message: "请输入入职时间", trigger: "blur"},
+            {max: 100, message: "最大长度为 8 个字符", trigger: "blur"},
+            {validator: hiredateValidate, trigger: "blur"}
+          ],
+          email: [
+            {required: true, message:"请输入邮箱", trigger:"blur"},
+            {max: 100, message: "最大长度为 100 个字符", trigger: "blur"},
+            {pattern: email, message: "邮箱格式不正确", trigger: "blur"},
+            {validator: emailValidateTeacherNumber, trigger: "blur"},
           ],
         },
         isShowAddDialog:false,
@@ -308,6 +345,7 @@
           )
           
         },
+        // 显示添加表单
         showAdd() {
         this.form = {
           selectcollege:this.selectcollege,
@@ -326,7 +364,9 @@
           this.$refs["addForm"].clearValidate();
         });
       },
+      // 显示编辑菜单
       showEdit(row) {
+        this.getMajor();
         this.isShowEditDialog=true;
         this.form={
               otherteacherNumber: row.teacherNumber,
@@ -337,7 +377,7 @@
               selectcollege:this.selectcollege,
         };
         let formData=new FormData();
-        formData.append('otherteacherNumber',row.teacherNumber);
+        formData.append('otherTeacherNumber',row.teacherNumber);
         formData.append('collegeNumber',this.selectcollege);
         this.$http.post("/TeacherSecretary/Teacherupdatecheck", formData).then(res => {
               let body = res.data;
@@ -345,8 +385,11 @@
               this.selectmajor=body.data.majorNumber;
               } 
             });
-
+         this.$nextTick(() => {
+          this.$refs["form"].clearValidate();
+        });
       },
+      // 重置密码
       resetPwd(row) {
         let formData=new FormData();
         formData.append('teacherNumber',row.teacherNumber);
@@ -370,6 +413,7 @@
             });
         });
       },
+      // 查询教师信息
       handleSearch() {
         this.$http
           .get("/TeacherSecretary/Teacher", {
@@ -441,15 +485,14 @@
             this.form.selectcollege = this.selectcollege;
             this.$http.put("/TeacherSecretary/Teacherupdate", this.form).then(res => {
               let body = res.data;
-
-              if (body.code === "200"&&body.data==1) {
+              if (body.code === "200"&&body.data===1) {
                 this.$message({
                   message: "保存成功",
                   type: "success"
                 });
                 this.isShowEditDialog = false;
                 this.handleSearch();
-              }else if(body.data=2){
+              }else if(body.data===2){
                this.$message.error("该老师已有教学课程");
               } 
               else {
@@ -468,6 +511,7 @@
           this.selection.push(e.teacherNumber);
         });
       },
+      // 删除教师
       handleDelete() {
         if (this.selection.length === 0) {
           this.$message({
