@@ -203,6 +203,7 @@
                   message: "请先选择班级或教师",
                   type: "warning"
                 });
+                return;
           }
           
             let formData = new FormData();
