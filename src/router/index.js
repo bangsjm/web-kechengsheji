@@ -119,7 +119,7 @@ const routes = [
       },
       {
         path:'ScoreSearch',
-        name:'成绩查询',
+        name:'查询成绩',
         component:ScoreSearch,
         meta:{
           keepAlive:true
