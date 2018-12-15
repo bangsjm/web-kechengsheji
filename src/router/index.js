@@ -32,6 +32,12 @@ import ElectiveDetails from '@/pages/TeacherSecretary/ElectiveDetails'
 
 import SearchCourse from '@/pages/student/SearchCourse'
 import SearchScore from '@/pages/student/SearchScore'
+
+import TimeTableSearch from '@/pages/teacher/TimeTableSearch'
+import SelectStudentSearch from '@/pages/teacher/SelectStudentSearch'
+import ScoreSearch from '@/pages/teacher/ScoreSearch'
+import FillInScore from '@/pages/teacher/FillInScore'
+
 Vue.use(Router)
 
 const routes = [
@@ -82,6 +88,44 @@ const routes = [
       },
     ]
 
+  },
+  {
+    path:'/teacher',
+    component:Main,
+    children:[
+      {
+        path:'TimeTableSearch',
+        name:'课表查询',
+        component:TimeTableSearch,
+        meta:{
+          keepAlive:true
+        }
+      },
+      {
+        path:'FillInScore',
+        name:'成绩填报',
+        component:FillInScore,
+        meta:{
+          keepAlive:true
+        }
+      },
+      {
+        path:'SelectStudentSearch',
+        name:'选课学生查询',
+        component:SelectStudentSearch,
+        meta:{
+          keepAlive:true
+        }
+      },
+      {
+        path:'ScoreSearch',
+        name:'成绩查询',
+        component:ScoreSearch,
+        meta:{
+          keepAlive:true
+        }
+      }
+    ]
   },
 {
   path:'/TeacherSecretary',

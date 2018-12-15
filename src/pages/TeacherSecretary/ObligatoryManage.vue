@@ -90,7 +90,7 @@
       };
 
     },
-    created() {
+    created() { 
     },
     activated() {
       if (!!this.$route.params.refresh) {
