@@ -2,11 +2,6 @@
   <div class="fill-page">
     <el-card class="fill-card">
      <Table2 :data="tableData" :checkData="checkTableData" :isShow="isShow" style="height: 100%;">
-       <template slot="header">
-         课程管理
-       </template>
-       <template slot="columnsLeft">
-       </template>
      </Table2>
     </el-card>
   </div>
