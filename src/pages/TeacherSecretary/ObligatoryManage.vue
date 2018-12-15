@@ -6,12 +6,12 @@
          <el-row :gutter="10">
             <el-col :md="3">
               <el-select v-model="selectcollege" placeholder="请选择学院" @focus="getCollege()" no-data-text="暂无学院">
-                <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value=v.collegeNumber></el-option>
+                <el-option v-for="(v, k) in college" :key="k" :label="v.collegeName" :value="v.collegeNumber"></el-option>
               </el-select>
             </el-col>
             <el-col :md="3">
               <el-select v-model="selectmajor" placeholder="请选择专业" @focus="getMajor()" no-data-text="暂无专业">
-                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value=v.majorNumber></el-option>
+                <el-option v-for="(v, k) in majors" :key="k" :label="v.majorName" :value="v.majorNumber"></el-option>
               </el-select>
             </el-col>
             <el-col :md="3">
@@ -30,8 +30,6 @@
             </el-col>
             <el-col :md="12" class="btn-group">
               <el-button type="primary" size="normal" icon="el-icon-search" @click="handleSearch"></el-button>
-              <el-button type="success" size="normal" icon="el-icon-circle-plus" @click="handleAdd"></el-button>
-              <el-button type="warning" size="normal" icon="el-icon-delete" @click="handleDelete"></el-button>
             </el-col>
           </el-row>
        </template>
@@ -47,6 +45,11 @@
           <el-table-column prop="courseHour" label="学时">
           </el-table-column>
           <el-table-column prop="courseNature" label="课程性质">
+          </el-table-column>
+          <el-table-column label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" size="small" @click="showEdit(scope.row)">编辑</el-button>
+            </template>
           </el-table-column>
         </template>
         <template slot="footer">
@@ -73,6 +76,7 @@
         selectcollege:"",
         selectmajor:"",
         selectgrade:"",
+        majorName:'',
         selectterm:"",
         college:[],
         majors:[],
@@ -98,41 +102,20 @@
         handleSelectionChange(selection) {
           this.selection = [];
           selection.forEach(e => {
-            this.selection.push(e.otId);
+            this.selection.push(e.studentNumber);
           });
         },
-        handleDelete() {
-          if (this.selection.length === 0) {
-            this.$message({
-              message: "请选中要删除的数据",
-              type: "warning"
-            });
-            return;
-          }
-          this.$confirm("此操作将永久删除, 是否继续?", "提示", {
-            confirmButtonText: "确定",
-            cancelButtonText: "取消",
-            type: "warning"
-          }).then(() => {
-            this.$http
-              .delete("/TeachingPlan/deleteTeachingPlan", {
+        showEdit(row){
+           this.$router.push({
+                name: "进行排课",
                 params: {
-                  deleteOtIds: this.selection.join()
-                }
-              })
-              .then(res => {
-                let body = res.data;
-                if (body.code === "200") {
-                  this.$message({
-                    message: "删除成功",
-                    type: "success"
-                  });
-                  this.handleSearch();
-                } else {
-                  this.$message.error(body.msg);
-                }
+                courseNumber:row.courseNumber,
+                selectcollege:this.selectcollege,
+                selectmajor:this.selectmajor,
+                selectgrade:this.selectgrade,
+                selectterm:this.selectterm
+                }  
               });
-          });
         },
         handleAdd(){
             if(this.selectcollege==""){
@@ -245,8 +228,9 @@
               this.$message({
               message: "请选择学期",
               type: "warning"
-            });}else{
-          this.$http
+            });
+            }else{
+              this.$http
             .get("/TeachingPlan/search", {
               params: {
                 collegeNumber:this.selectcollege,
@@ -279,6 +263,7 @@
               }
             });
             }
+          
         },
     }
   }

@@ -21,7 +21,17 @@ import studentManage from '@/pages/TeacherSecretary/studentManage'
 import courseManage from '@/pages/TeacherSecretary/courseManage'
 import teachingPlanManage from '@/pages/TeacherSecretary/teachingPlanManage'
 import teacherManage from '@/pages/TeacherSecretary/teacherManage'
+import AddTeachingPlan from '@/pages/TeacherSecretary/AddTeachingPlan'
 
+import ObligatoryManage from '@/pages/TeacherSecretary/ObligatoryManage'
+import updateObligatoryManage from '@/pages/TeacherSecretary/updateObligatoryManage'
+
+
+import ElectiveManage from '@/pages/TeacherSecretary/ElectiveManage'
+import ElectiveDetails from '@/pages/TeacherSecretary/ElectiveDetails'
+
+import SearchCourse from '@/pages/student/SearchCourse'
+import SearchScore from '@/pages/student/SearchScore'
 Vue.use(Router)
 
 const routes = [
@@ -50,6 +60,29 @@ const routes = [
       }
     ]
   },
+  {
+    path:'/student',
+    component:Main,
+    children:[
+      {
+        path:'SearchCourse',
+        name:'选课管理',
+        component:SearchCourse,
+        meta:{
+          keepAlive:true
+        }
+      },
+      {
+        path:'SearchScore',
+        name:'成绩查询',
+        component:SearchScore,
+        meta:{
+          keepAlive:true
+        }
+      },
+    ]
+
+  },
 {
   path:'/TeacherSecretary',
   component:Main,
@@ -58,6 +91,19 @@ const routes = [
       path:'ProfessionalManage',
       name:'专业管理',
       component:ProfessionalManage,
+      meta:{
+        keepAlive:true
+      }
+    },
+    {
+      path:'updateObligatoryManage',
+      name:'进行排课',
+      component:updateObligatoryManage,
+    },
+    {
+      path:'ObligatoryManage',
+      name:'必修管理',
+      component:ObligatoryManage,
       meta:{
         keepAlive:true
       }
@@ -93,6 +139,24 @@ const routes = [
       meta:{
         keepAlive:true
       }
+    },
+    {
+      path:'AddTeachingPlan',
+      name:'添加教学计划',
+      component:AddTeachingPlan,
+    },
+    {
+      path:'ElectiveManage',
+      name:'选修管理',
+      component:ElectiveManage,
+      meta:{
+        keepAlive:true
+      }
+    },
+    {
+      path:'ElectiveDetails',
+      name:'选修详情',
+      component:ElectiveDetails,
     },
   ]
 },
