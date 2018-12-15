@@ -38,6 +38,7 @@ import SelectStudentSearch from '@/pages/teacher/SelectStudentSearch'
 import ScoreSearch from '@/pages/teacher/ScoreSearch'
 import FillInScore from '@/pages/teacher/FillInScore'
 
+import StatisticsManage from '@/pages/TeacherSecretary/StatisticsManage'
 Vue.use(Router)
 
 const routes = [
@@ -131,6 +132,14 @@ const routes = [
   path:'/TeacherSecretary',
   component:Main,
   children:[
+    {
+      path:'StatisticsManage',
+      name:'统计功能',
+      component:StatisticsManage,
+      meta:{
+        keepAlive:true
+      }
+    },
     {
       path:'ProfessionalManage',
       name:'专业管理',
