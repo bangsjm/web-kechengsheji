@@ -1,5 +1,5 @@
 <template>
-    <div ref="all" style="height:100%" class="m-table">
+    <div ref="all"  class="m-table">
         <div ref="header" class="clearfix m1-header">
             <slot name="header"></slot>
         </div>

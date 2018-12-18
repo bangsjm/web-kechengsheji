@@ -52,6 +52,7 @@
                 <!-- <el-dropdown-item>个人信息</el-dropdown-item>
                 <el-dropdown-item>系统设置</el-dropdown-item> -->
                 <el-dropdown-item @click.native="logout">退出</el-dropdown-item>
+                <el-dropdown-item @click.native="changePassword">修改密码</el-dropdown-item>
               </el-dropdown-menu>
             </el-dropdown>
           </div>
@@ -72,6 +73,25 @@
         <div class="main-mask" v-if="isShowMenu" @click="handleMaskClick"></div>
       </transition>
     </el-container>
+
+    <el-dialog title="修改密码"
+               custom-class="m1-dialog el-col-md-10 el-col-md-push-7 el-col-sm-14 el-col-sm-push-5 el-col-xs-22 el-col-xs-push-1"
+               :visible.sync="isShowPassword">
+      <el-form :model="form" :rules="rules" ref="form" label-width="80px">
+        <el-form-item label="原密码" prop="oldPassword">
+          <el-input type="password" v-model="form.oldPassword"  placeholder="请输入原密码"></el-input>
+        </el-form-item>
+        <el-form-item label="新密码" prop="newPassword">
+          <el-input type="password" v-model="form.newPassword" placeholder="请输入新密码"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="surePassword">
+          <el-input type="password" v-model="form.surePassword"  placeholder="请再次输入密码"></el-input>
+        </el-form-item>
+        <el-form-item label="" label-width="0" class="dialog-btn-group">
+          <el-button type="success" size="small" @click="handleserve">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -187,6 +207,33 @@
       NavMenuItem
     },
     data() {
+      // 确认密码验证
+      var passwordValidate = (rule, value, callback) => {
+        if (value === "") {
+          callback(new Error("请再次输入密码"));
+        } else if (value !== this.form.newPassword) {
+          callback(new Error("两次输入的密码不一致"));
+        } else {
+          callback();
+        }
+      };
+      // 原密码验证
+      var oldPasswordValidate = (rule, value, callback) => {
+        let formData=new FormData();
+        formData.append('userName',window.sessionStorage.getItem("userName"));
+        formData.append('oldPassword',value);
+        formData.append('identity',window.sessionStorage.getItem("roleIds"));
+        this.$http.post("/auth/oldPasswordValidate", formData,{
+          hideLoading: true,
+        }).then(resu => {
+          let body=resu.data;
+          if (body.code==="200"&&body.data===1) {
+            callback();
+          } else {
+            callback(new Error("输入的密码错误"));
+          }
+        })
+      };
       return {
         token:'',
         menuunfold,
@@ -198,6 +245,29 @@
         menu: [],
         defaultMenuItem: "",
         realName: '',
+        isShowPassword:false,
+        form:{
+          oldPassword:"",
+          newPassword:"",
+          surePassword:"",
+        },
+        rules: {
+          
+          oldPassword: [
+            {required: true, message: "请输入原密码", trigger: "blur"},
+            {max: 20, message: "最大长度为 20 个字符", trigger: "blur"},
+            {validator: oldPasswordValidate, trigger: "blur"}
+          ],
+          newPassword: [
+            {required: true, message: "请输入修改的密码", trigger: "blur"},
+            {max: 20, message: "最大长度为 20 个字符", trigger: "blur"}
+          ],
+          surePassword: [
+            {required: true,message:"请再次输入密码",trigger:"blur"},
+            {max: 20, message: "最大长度为 20 个字符", trigger: "blur"},
+            {validator: passwordValidate, trigger: "blur"}
+          ],
+        },
       };
     },
     created() {
@@ -305,6 +375,43 @@
       },
       handleMaskClick() {
         this.isShowMenu = false;
+      },
+      changePassword(){
+        this.form={
+          oldPassword:"",
+          newPassword:"",
+          surePassword:"",
+        },
+        this.isShowPassword=true;
+        this.$nextTick(() => {
+          this.$refs["form"].clearValidate();
+        });
+      },
+      handleserve(){
+        this.$refs["form"].validate((pass, o) => {
+          if (pass) {
+          let formData=new FormData();
+        formData.append('userName',window.sessionStorage.getItem("userName"));
+        formData.append('newPassword',this.form.newPassword);
+        formData.append('identity',window.sessionStorage.getItem("roleIds"));
+        this.$http.post("/auth/changePassword", formData,{
+          hideLoading: false,
+        }).then(resu => {
+          let body=resu.data;
+          if (body.code==="200") {
+            this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+                this.isShowPassword=false;
+          } else {
+            callback(new Error("保存失败"));
+          }
+        });
+          } else {
+            this.$message.error("表单输入不正确");
+          }
+        });
       }
     }
   };
