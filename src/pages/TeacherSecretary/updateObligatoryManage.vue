@@ -75,13 +75,15 @@
         total: 0,
         handlePage: 1,
         selection:[],
-
+        courseMajor:"",
+        courseCollege:"",
       };
 
     },
     created() {
       this.getParams();
       this.handleSearch();
+      this.getCourseInfo();
     },
     activated() {
       if (!!this.$route.params.refresh) {
@@ -89,8 +91,23 @@
       }
     },
     methods:{
-      goBack(){
-        this.$router.push({name: "必修管理"  });
+          goBack(){
+            this.$router.push({name: "必修管理"  });
+          },
+          getCourseInfo(){
+          this.$http
+            .get("/TeachingPlan/getCourseInfo", {
+              params: {
+                courseNumber:this.courseNumber,
+              }
+            })
+          .then(res => {
+            let body = res.data;
+            if (body.code === "200") {
+              this.courseMajor=body.data.majorNumber;
+              this.courseCollege=body.data.collegeNumber;
+              }
+            });
           },
       getParams () {
         this.collegeNumber = this.$route.params.selectcollege;
@@ -121,8 +138,8 @@
           this.selectteacher = "";
           this.teachers = [];
           let formData = new FormData();
-          formData.append('collegeNumber', this.collegeNumber)
-          formData.append('majorNumber',this.majorNumber)
+          formData.append('collegeNumber', this.courseCollege)
+          formData.append('majorNumber',this.courseMajor)
           this.$http
           .post("/TeachingPlan/getTeacher",formData,{
             hideLoading:true,
@@ -234,7 +251,6 @@
             });
         },
         handleSearch() {
-          alert
           this.$http
             .get("/TeachingPlan/selectInfo", {
               params: {
