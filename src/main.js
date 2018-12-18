@@ -52,7 +52,7 @@ Axios.interceptors.request.use(function (config) {
 Axios.interceptors.response.use(function (response) {
   // Do something with response data
   !!loading && loading.close()
-  if (response.headers && (response.headers['content-type'] === 'application/x-download' || response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
+  if (response.headers && (response.headers['content-type'] === 'application/x-download' ||response.headers['content-type'] === 'application/vnd.ms-excel;charset=utf-8'|| response.headers['content-type'] === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')) {
     downloadUrl(response.request.responseURL)
     response.data='';
     response.headers['content-type'] = 'text/json'
