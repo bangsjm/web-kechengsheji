@@ -81,6 +81,54 @@
           var date=new Date;
           this.selectYear=date.getFullYear();
         },
+        showAdd(){
+          this.$router.push({
+            name: "学生选课",
+            params: {
+            studentNumber:this.studentNumber,
+            }  
+          });
+        },
+        showEdit(row){
+            if(row.courseNature=="必修"){
+              this.$message({
+                showClose: true,
+                message: "必修课不能退课",
+                type: "warning"
+              });
+            }else{
+            this.$http
+            .get("/StudentCourse/deleteCourse", {
+              params: {
+                courseNumber:row.courseNumber,
+                studentNumber:this.studentNumber,
+                teacherNumber:row.teacherNumber,
+                year:this.selectYear,
+              }
+            })
+          .then(res => {
+            let body = res.data;
+            if (body.code === "200") {
+                  if(body.data==1){
+                    this.$message({
+                      showClose: true,
+                      message: "该课属于公选，不能退课!",
+                      type: "warning"
+                    });
+                  }else{
+                    this.$message({
+                      showClose: true,
+                      message: "退课成功！",
+                      type: "success"
+                    });
+                    this.handleSearch();
+                  }
+              }else {
+                this.$message.error(body.msg);
+              }
+            });
+            }
+        },
         handleSearch() {
           this.$http
             .get("/StudentCourse/search", {

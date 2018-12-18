@@ -14,7 +14,6 @@ import DictionaryEdit from '@/pages/setting/dictionary/DictionaryEdit'
 import DataRole from '@/pages/setting/dataRole/DataRole'
 import Role from  '@/pages/setting/role/Role'
 import Organization from  '@/pages/setting/organization/Organization'
-import Unit from '@/pages/setting/unit/UnitManagement'
 
 import ProfessionalManage from '@/pages/TeacherSecretary/ProfessionalManage'
 import studentManage from '@/pages/TeacherSecretary/studentManage'
@@ -32,6 +31,7 @@ import ElectiveDetails from '@/pages/TeacherSecretary/ElectiveDetails'
 
 import SearchCourse from '@/pages/student/SearchCourse'
 import SearchScore from '@/pages/student/SearchScore'
+import StudentSelectCourse from '@/pages/student/StudentSelectCourse'
 
 import TimeTableSearch from '@/pages/teacher/TimeTableSearch'
 import SelectStudentSearch from '@/pages/teacher/SelectStudentSearch'
@@ -86,6 +86,11 @@ const routes = [
         meta:{
           keepAlive:true
         }
+      },
+      {
+        path:'StudentSelectCourse',
+        name:'学生选课',
+        component:StudentSelectCourse,
       },
     ]
 
@@ -304,21 +309,6 @@ const routes = [
       path: 'organization',
       name: '组织管理',
       component: Organization,
-      meta: {
-        keepAlive: true
-      }
-    },
-  ]
-},
-{
-  path: '/setting/unit',
-    component:Main,
-    children:
-  [
-    {
-      path: 'unit',
-      name: '单位管理',
-      component: Unit,
       meta: {
         keepAlive: true
       }
