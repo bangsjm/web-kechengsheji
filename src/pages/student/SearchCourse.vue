@@ -71,10 +71,8 @@
       };
 
     },
-<<<<<<< HEAD
   
   
-=======
     created(){
       this.getParams();
       this.handleSearch();
@@ -168,7 +166,6 @@
             });
         },
     },
->>>>>>> 737d6c54dac1b3edb77a28455e089903b924076c
   }
 </script>
 <style scoped>
