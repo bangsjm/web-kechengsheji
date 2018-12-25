@@ -109,13 +109,21 @@
             }).then(res => {
               let body = res.data;
               if (body.code === "200") {
-                this.$message({
-                  message: "保存成功",
-                  type: "success"
-                });
+
+                if(body.data==1){
+                  this.$message({
+                    message: "保存成功",
+                    type: "success"
+                  });
                 this.$router.push({
                   name: "教学计划管理"
                 });
+                }else{
+                  this.$message({
+                    message: "部分课程已选！",
+                    type: "warning"
+                  });
+                }
               } else {
                 this.$message.error(body.msg);
               }

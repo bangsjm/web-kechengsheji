@@ -293,9 +293,13 @@
             window.sessionStorage.setItem("roleIds",body.data.roleIds);
             window.sessionStorage.setItem("droleIds",body.data.identity);
             this.$http.defaults.headers.common['X-Auth-Token'] = body.data.token
-            this.$router.push('/index');
-            // getAllDict();
-            //login
+            if(body.data.roleIds==1){
+               this.$router.push('/student/SearchScore');
+            }else if(body.data.roleIds==2){
+               this.$router.push('/teacher/TimeTableSearch');
+            }else{
+              this.$router.push('/TeacherSecretary/ProfessionalManage');
+            }
           } else {
             this.$message({
               showClose: true,
