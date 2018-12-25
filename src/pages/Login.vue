@@ -50,7 +50,8 @@
       <el-form :model="forgetform" :rules="forgetrules" ref="forgetFrom" label-width="100px">
         <el-form-item label="邮箱" prop="email">
           <el-col  :lg="{ span: 18 }" :md="{ span: 18 }" :sm="{ span: 18 }" :xs="{ span: 18 }">
-          <el-autocomplete style="width: 100%;" placeholder="请输入邮箱地址" v-model="forgetform.email" :fetch-suggestions="emailAutoComplete" :trigger-on-focus="false"></el-autocomplete>
+          <el-autocomplete @select="handleSelect"
+           style="width: 100%;" placeholder="请输入邮箱地址" v-model="forgetform.email" :fetch-suggestions="emailAutoComplete" :trigger-on-focus="false"></el-autocomplete>
           </el-col>
            <el-col  :lg="{ span: 2 }" :md="{ span: 2 }" :sm="{ span: 2}" :xs="{ span: 2 }">
           <input size="mini"  type="button" id="btn" class="button blue medium" value="免费获取验证码" @click="sendemail" >
@@ -248,6 +249,9 @@
     methods: {
       focusToPwdInput () {
         this.$refs.pwdinput.focus()
+      },
+      handleSelect(){
+        this.$refs["forgetFrom"].clearValidate();
       },
       login() {
         if (!this.userName || !this.password) {

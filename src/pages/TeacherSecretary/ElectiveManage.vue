@@ -52,7 +52,7 @@
                :visible.sync="isShowTeachers">
                <el-tree highlight-current :filter-node-method="filterNode" :data="treeData" empty-text="暂无教师" show-checkbox
                  node-key="teacherNumber"  :props="defaultProps" @node-click="handleTreeNodeClick" default-expand-all ref="tree2"></el-tree>
-                <el-button  style="float:right,padding-bottom:3px" type="success" size="small" @click="handleAddTeacher">保存</el-button>
+              <div style="float:right;padding:5px" > <el-button  style="float:right" type="success" size="small" @click="handleAddTeacher">保存</el-button> </div>
     </el-dialog>
   </div>
 </template>
