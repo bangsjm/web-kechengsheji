@@ -258,11 +258,6 @@
           userSex: [
             {required: true, message: "请选择性别", trigger: "blur"},
           ],
-          userPhone: [
-            {required: true, message: "请输入联系电话", trigger: "blur"},
-            {max: 12, message: "最大长度为 12 个字符", trigger: "blur"},
-            {pattern: phone, message: "手机号码格式不正确", trigger: "blur"}
-          ],
           userEmail: [
             {required: true, message: "请输入邮箱", trigger: "blur"},
             {max: 50, message: "最大长度为 50 个字符", trigger: "blur"},

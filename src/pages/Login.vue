@@ -187,7 +187,6 @@
 
 
 <script>
-
   import {getAllDict} from "@/lib/dict";
   import {email} from '@/assets/js/common/validate'
   export default {

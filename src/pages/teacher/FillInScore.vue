@@ -40,6 +40,7 @@
        </el-table-column>
        <el-table-column label="操作">
             <template slot-scope="scope">
+              <el-button type="text" size="small"  @click="showAdd(scope.row)">填报</el-button>
               <el-button type="text" size="small"  @click="showEdit(scope.row)">修改</el-button>
             </template>
           </el-table-column>
@@ -66,12 +67,26 @@
       </el-form>
     </el-dialog>
     
+
+    <el-dialog title="填报成绩"
+               custom-class="m1-dialog el-col-md-10 el-col-md-push-7 el-col-sm-14 el-col-sm-push-5 el-col-xs-22 el-col-xs-push-1"
+               :visible.sync="isShowAddDialog">
+      <el-form :model="form" :rules="rules" ref="form" label-width="80px">
+       <el-form-item label="成绩" prop="inScore">
+          <el-input v-model="form.inScore" placeholder="请输入成绩"></el-input>
+        </el-form-item>
+
+        <el-form-item label="" label-width="0" class="dialog-btn-group">
+          <el-button type="success" size="small" @click="handleAdd">保存</el-button>
+        </el-form-item>
+      </el-form>
+    </el-dialog>
   </div>
 </template>
 
 <script>
   import Table2 from "@/components/table/Table1";
-
+  import {grade} from '@/assets/js/common/validate'
   export default {
     name: "FillInScore",
     components: {
@@ -80,10 +95,9 @@
     data() {
       return {
                 rules: {  
-                    
                     inScore: [
-                      {required: true, message: "请输入课程编号", trigger: "blur"},
-                      {max: 30, message: "最大长度为 30 个字符", trigger: "blur"},  
+                      {required: true, message: "请输入成绩", trigger: "blur"}, 
+                      {pattern: grade, message: "请输入1-100", trigger: "blur"}
                     ]
                   },
                 collegeNumber:'',
@@ -101,8 +115,10 @@
                 pageSize: 10,
                 total: 0,
                 score:'',
+                oldScore:'',
                 inScore:'',
                 isShowEditDialog: false,
+                isShowAddDialog:false,
                 handlePage: 1,
                 selection:[],
                 form:{
@@ -157,17 +173,62 @@
     },
     
     methods:{
-        handleSave(){
-            var teacherNumber = window.sessionStorage.getItem("userName");
+      handleAdd(){
+          this.$refs["form"].validate((pass, o) => {
+            if (pass) {
+                        var teacherNumber = window.sessionStorage.getItem("userName");
             var year = this.selectYear;
             var score = this.form.inScore;
-            alert(teacherNumber+"   "+year+"    "+score);
+            var studentNumber = this.studentNumber;
+            var oldScore = this.oldScore;
+            this.$http.get("/Teacher/AddScore",{
+              params:{
+              teacherNumber:teacherNumber,
+              year:year,
+              courseNumber:this.selectCourse,
+              score:score,
+              studentNumber:studentNumber,
+              oldScore:oldScore
+            }
+            }).then(res => {
+              let body = res.data;
+              if (body.code === "200") {
+                if(body.data >0){
+                  this.$message({
+                  message: "保存成功",
+                  type: "success"
+                });
+                this.isShowAddDialog = false;
+                }else{
+                  this.$message.error("该同学成绩已经录入");
+                }
+                this.handleSearch();
+              } else {
+                this.$message.error(body.msg);
+              }
+            });
+            } else {
+              this.$message.error("表单输入不正确");
+            }
+          });
+            
+      },
+        handleSave(){
+          this.$refs["form"].validate((pass, o) => {
+            if (pass) {
+                        var teacherNumber = window.sessionStorage.getItem("userName");
+            var year = this.selectYear;
+            var score = this.form.inScore;
+            var studentNumber = this.studentNumber;
+            var oldScore = this.oldScore;
             this.$http.get("/Teacher/UpdateScore",{
               params:{
               teacherNumber:teacherNumber,
               year:year,
               courseNumber:this.selectCourse,
-              score:score
+              score:score,
+              studentNumber:studentNumber,
+              oldScore:oldScore
             }
             }).then(res => {
               let body = res.data;
@@ -184,11 +245,25 @@
                 this.$message.error(body.msg);
               }
             });
+            } else {
+              this.$message.error("表单输入不正确");
+            }
+          });
+            
       },
       showEdit(row){
+        this.studentNumber = row.studentNumber;
         this.isShowEditDialog = true;
         this.form.inScore = row.score;
-
+        this.oldScore = row.score;
+         this.$refs["form"].clearValidate();
+       },
+       showAdd(row){
+        this.studentNumber = row.studentNumber;
+        this.isShowAddDialog = true;
+        this.form.inScore = row.score;
+        this.oldScore = row.score;
+         this.$refs["form"].clearValidate();
        },
       Download(){
 
@@ -233,7 +308,8 @@
               year:year,
               courseNumber:this.selectCourse,
               pageNum: this.pageNum,
-              pageSize: this.pageSize
+              pageSize: this.pageSize,
+              nature:this.selectNature
             }
           }
           )
@@ -271,7 +347,8 @@
               year:year,
               courseNumber:this.selectCourse,
               pageNum: this.pageNum,
-              pageSize: this.pageSize
+              pageSize: this.pageSize,
+              nature:this.selectNature
             }
           }
           )
