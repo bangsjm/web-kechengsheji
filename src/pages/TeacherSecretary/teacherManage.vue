@@ -82,7 +82,7 @@
           <el-input type="password" v-model="form.sure_password" placeholder="请再次输入密码"></el-input>
         </el-form-item>
         <el-form-item label="入职时间" prop="hiredate">
-          <el-input v-model="form.hiredate" placeholder="请输入入职时间"></el-input>
+          <el-input v-model="form.hiredate" placeholder="请输入入职时间 例如2018-05-17"></el-input>
         </el-form-item>
         <el-form-item label="职称" prop="prof">
         <el-select v-model="form.prof" placeholder="请选择职称">
@@ -122,7 +122,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="入职时间" prop="hiredate">
-          <el-input v-model="form.hiredate" placeholder="请输入入职时间"></el-input>
+          <el-input v-model="form.hiredate" placeholder="请输入入职时间 例如****-**-**"></el-input>
         </el-form-item>
         <el-form-item label="职称" prop="prof">
         <el-select v-model="form.prof" placeholder="请选择职称">
