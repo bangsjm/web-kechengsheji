@@ -81,9 +81,6 @@
   color: #fff;
   font-color: #fff;
 }
-.loginButton{
-  background-color:#CD835F
-}
 .login-body {
   padding: 25px;
   border-radius: 4px;
