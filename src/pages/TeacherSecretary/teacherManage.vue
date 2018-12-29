@@ -301,6 +301,14 @@
       });
     },
     methods: {
+        handleSizeChange(pageSize) {
+          this.pageSize = pageSize;
+          this.handleSearch();
+        },
+        handleCurrentChange(pageNum) {
+          this.pageNum = pageNum;
+          this.handleSearch();
+        },
         getParams () {
           this.token = window.sessionStorage.getItem("token");
           this.$nextTick(()=>{
