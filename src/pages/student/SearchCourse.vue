@@ -131,6 +131,15 @@
             });
             }
         },
+        
+        handleSizeChange(pageSize) {
+          this.pageSize = pageSize;
+          this.handleSearch();
+        },
+        handleCurrentChange(pageNum) {
+          this.pageNum = pageNum;
+          this.handleSearch();
+        },
         handleSearch() {
           this.$http
             .get("/StudentCourse/search", {
